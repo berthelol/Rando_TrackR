@@ -11,6 +11,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
+import android.widget.Toast;
+
+/**
+ * Created by Loïc on 18/09/16.
+ */
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -21,8 +28,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -62,7 +67,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.alert) {
+            Toast toast = Toast.makeText(getApplicationContext(), "Alert", Toast.LENGTH_LONG);
+            toast.show();
             return true;
         }
 
@@ -100,6 +107,12 @@ public class MainActivity extends AppCompatActivity
             case R.id.parametres:
                 fragment = new Parametres();
                 break;
+            case 0:
+                fragment = new Profil();
+                break;
+            default:
+                fragment = new Accueil();
+
         }
 
         //replacing the fragment
@@ -111,5 +124,10 @@ public class MainActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+    }
+
+    public void profil_click(View e)
+    {
+        displaySelectedScreen(0);
     }
 }

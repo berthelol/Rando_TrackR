@@ -7,7 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
+/**
+ * Created by Loïc on 18/09/16.
+ */
 
 public class Parcours extends Fragment {
 

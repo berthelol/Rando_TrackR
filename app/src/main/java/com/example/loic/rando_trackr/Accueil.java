@@ -9,7 +9,7 @@ package com.example.loic.rando_trackr;
         import android.view.ViewGroup;
 
 /**
- * Created by Belal on 18/09/16.
+ * Created by Loïc on 18/09/16.
  */
 
 
