@@ -3,4 +3,5 @@
     <color name="colorPrimary">#007F00</color>
     <color name="colorPrimaryDark">#003F00</color>
     <color name="colorAccent">#007F00</color>
+    <color name="greensavebutton">#ff669900</color>
 </resources>

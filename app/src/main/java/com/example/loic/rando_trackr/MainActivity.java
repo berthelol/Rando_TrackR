@@ -1,5 +1,6 @@
 package com.example.loic.rando_trackr;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -7,12 +8,17 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
+
+import static android.R.color.holo_green_dark;
+import static android.R.color.holo_orange_dark;
 
 /**
  * Created by Loïc on 18/09/16.
@@ -129,5 +135,13 @@ public class MainActivity extends AppCompatActivity
     public void profil_click(View e)
     {
         displaySelectedScreen(0);
+    }
+
+    public void onSave (View view)
+    {
+        Button savebtn = (Button) findViewById(R.id.savebutton);
+        savebtn.setBackgroundResource(R.drawable.mysavebutton);
+        Toast toast = Toast.makeText(getApplicationContext(), "Modifications saved", Toast.LENGTH_SHORT);
+        toast.show();
     }
 }

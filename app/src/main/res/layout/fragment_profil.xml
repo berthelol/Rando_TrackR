@@ -6,14 +6,37 @@
     android:layout_height="match_parent"
     android:weightSum="1">
 
-    <TextView
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="69dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Profil"
-        android:id="@+id/textView"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="69dp"
+            android:text="Profil"
+            android:id="@+id/textView"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="serif"
+            android:textSize="36sp"
+            android:textStyle="normal|italic"
+            android:textAllCaps="false"
+            android:textAlignment="center"
+            android:layout_weight="1" />
+
+        <Button
+            android:text="Save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/savebutton"
+            android:layout_weight="1"
+            android:layout_marginTop="-5dp"
+            android:textSize="7sp"
+            android:background="@drawable/mysavebutton"
+            android:onClick="onSave"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
 
     <TableLayout
         android:layout_width="match_parent"
@@ -74,7 +97,8 @@
                 android:layout_height="wrap_content"
                 android:inputType="phone"
                 android:ems="10"
-                android:id="@+id/sos" />
+                android:id="@+id/sos"
+                android:textAllCaps="false" />
         </TableRow>
 
         <TableRow
@@ -114,10 +138,12 @@
 
     <Button
         android:text="BOUTON D'URGENCE"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/button3"
         android:ellipsize="start"
-        android:background="@android:color/holo_blue_dark"/>
+        android:background="@drawable/myurgencebutton"
+        android:textColor="@android:color/white"
+        android:layout_width="220dp"
+        android:layout_marginStart="55dp" />
 
 </LinearLayout>
