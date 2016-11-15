@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="1">
@@ -16,7 +17,7 @@
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="226dp">
 
         <TableRow
             android:layout_width="match_parent"
@@ -27,20 +28,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/label_fistname"
-                android:layout_marginLeft="100dp"
-                android:fontFamily="sans-serif"
-                android:textSize="18sp"
-                android:layout_row="1"
-                android:layout_column="0" />
+                android:textSize="18sp" />
 
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
-                android:text="Loïc"
                 android:ems="10"
-                android:id="@+id/firstname"
-                android:layout_marginLeft="10dp" />
+                android:id="@+id/firstname" />
+
         </TableRow>
 
         <TableRow
@@ -58,18 +54,70 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
-                android:text="Daoud"
                 android:ems="10"
                 android:id="@+id/lastname" />
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:text="Numéro Urgence:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/label_sos"
+                android:textSize="18sp" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:ems="10"
+                android:id="@+id/sos" />
+        </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:text="Type de contact:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/label_contact_type"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <CheckBox
+                    android:text="sms"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/sms"
+                    android:layout_weight="1"
+                    android:layout_width="45dp" />
+
+                <CheckBox
+                    android:text="call"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/call"
+                    android:layout_weight="1"
+                    android:layout_width="45dp" />
+
+            </LinearLayout>
+
+        </TableRow>
     </TableLayout>
+
+    <Button
+        android:text="BOUTON D'URGENCE"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/button3"
+        android:ellipsize="start"
+        android:background="@android:color/holo_blue_dark"/>
 
 </LinearLayout>
