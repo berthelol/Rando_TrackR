@@ -20,6 +20,7 @@ import android.widget.Toast;
 import static android.R.color.holo_green_dark;
 import static android.R.color.holo_orange_dark;
 
+
 /**
  * Created by Loïc on 18/09/16.
  */
@@ -44,8 +45,15 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // Pushing MapView Fragment
+        Fragment fragment = Fragment.instantiate(this, Accueil.class.getName());
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.content_frame, fragment);
+        ft.commit();
+
+
         //add this line to display menu1 when the activity is loaded
-        displaySelectedScreen(R.id.accueil);
+       // displaySelectedScreen(R.id.profile);
     }
 
     @Override
