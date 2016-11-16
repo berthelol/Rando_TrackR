@@ -186,5 +186,4 @@ public class Parcours extends Fragment implements LocationListener{
 
     }
 
-
 }
