@@ -6,9 +6,9 @@
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="450dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_height="470dp" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -21,10 +21,28 @@
             android:text="TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="12dp"
+            android:id="@+id/textView3"
+            android:layout_weight="1" />
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView7"
+            android:layout_weight="1" />
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/textView2"
+            android:layout_weight="1" />
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView5"
             android:layout_weight="1" />
     </LinearLayout>
 
