@@ -46,15 +46,17 @@ public class Profil extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles
         getActivity().setTitle("Profil");
-
+        //declare all object from view
         firstname = (EditText) getView().findViewById(R.id.firstname);
         lastname = (EditText) getView().findViewById(R.id.lastname);
         urgency_number =(EditText) getView().findViewById(R.id.sos);
         savebutton= (Button) getView().findViewById(R.id.savebutton);
 
+        //add all listenners to theses objects
         firstname.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
+                //change color of the save button to notify the values has changes
                 savebutton.setBackgroundResource(getResources().getIdentifier("@drawable/myunsavebutton", "drawable", getActivity().getPackageName()));
             }
 
@@ -67,6 +69,7 @@ public class Profil extends Fragment {
         lastname.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
+                //change color of the save button to notify the values has changes
                 savebutton.setBackgroundResource(getResources().getIdentifier("@drawable/myunsavebutton", "drawable", getActivity().getPackageName()));
             }
 
@@ -80,6 +83,7 @@ public class Profil extends Fragment {
         urgency_number.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
+                //change color of the save button to notify the values has changes
                 savebutton.setBackgroundResource(getResources().getIdentifier("@drawable/myunsavebutton", "drawable", getActivity().getPackageName()));
             }
 
