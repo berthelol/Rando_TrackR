@@ -154,7 +154,7 @@ public class Parcours extends Fragment implements LocationListener{
         //allure
         double bearing =location.getBearing();
         double speed = location.getSpeed();
-        double accuracy = location.getSpeed();
+        double accuracy = location.getAccuracy();
 
         latitude.setText(String.valueOf(lat));
         longitude.setText(String.valueOf(lng));
