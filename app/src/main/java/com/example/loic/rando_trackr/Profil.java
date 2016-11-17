@@ -1,7 +1,10 @@
 package com.example.loic.rando_trackr;
 
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -52,6 +55,30 @@ public class Profil extends Fragment {
         urgency_number =(EditText) getView().findViewById(R.id.sos);
         savebutton= (Button) getView().findViewById(R.id.savebutton);
 
+        try {
+            SQLiteDatabase database = getContext().openOrCreateDatabase("RandoTrackR", Context.MODE_PRIVATE,null);
+            Cursor c =database.rawQuery("SELECT * FROM user",null);
+
+            int firstnameindex = c.getColumnIndex("firstname");
+            int lastnameindex = c.getColumnIndex("lastname");
+            int nburgenceindex = c.getColumnIndex("nburgence");
+
+            c.moveToFirst();
+            while (c!=null)
+            {
+                firstname.setText(c.getString(firstnameindex));
+                Log.i("in profile firstname:",c.getString(firstnameindex));
+                lastname.setText(c.getString(lastnameindex));
+                Log.i("in profile lastname:",c.getString(lastnameindex));
+                urgency_number.setText(c.getString(nburgenceindex));
+                Log.i("in profile nb urgence:",c.getString(nburgenceindex));
+                c.moveToNext();
+            }
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
         //add all listenners to theses objects
         firstname.addTextChangedListener(new TextWatcher() {
 
@@ -93,5 +120,7 @@ public class Profil extends Fragment {
 
             }
         });
+
+
     }
 }
