@@ -6,6 +6,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
+import android.widget.ListView;
+import android.widget.Spinner;
+
+import java.util.ArrayList;
 
 /**
  * Created by Loïc on 18/09/16.
@@ -27,5 +34,10 @@ public class Parametres extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles
         getActivity().setTitle("Parametres");
+
+
+        Spinner spinner3 = (Spinner) getView().findViewById(R.id.spinner_item3) ;
+        spinner3.setSelection(4,true);
+
     }
 }

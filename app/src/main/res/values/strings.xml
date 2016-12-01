@@ -19,4 +19,7 @@
 
     <string name="error_field_required">This field is required</string>
 
+<string name="spin">TOTO</string>
+
+
 </resources>

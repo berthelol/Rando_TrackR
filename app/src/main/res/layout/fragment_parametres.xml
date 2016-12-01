@@ -3,13 +3,121 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Parametres"
-        android:id="@+id/textView"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:weightSum="1">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.12">
+
+            <TextView
+                android:text="Préférences"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView13"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="12dp"
+                android:textSize="36sp"
+                android:fontFamily="cursive"
+                android:textColor="@android:color/holo_blue_dark" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="87dp">
+
+            <TextView
+                android:text="Racourci 1 :"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView14"
+                android:textSize="24sp"
+                android:textColor="@android:color/holo_blue_dark"
+                android:fontFamily="cursive"
+                android:layout_width="wrap_content" />
+
+            <Spinner android:id="@+id/spinner_item1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:drawSelectorOnTop="true"
+                android:prompt="@string/spin"
+                android:entries="@array/items" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="83dp">
+
+            <TextView
+                android:text="Racourci 2 :"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView15"
+                android:textSize="24sp"
+                android:textColor="@android:color/holo_blue_dark"
+                android:fontFamily="cursive" />
+
+            <Spinner android:id="@+id/spinner_item2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:drawSelectorOnTop="true"
+                android:prompt="@string/spin"
+                android:entries="@array/items" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="70dp">
+
+            <TextView
+                android:text="Racourci 3 :"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView16"
+                android:textSize="24sp"
+                android:textColor="@android:color/holo_blue_dark"
+                android:fontFamily="cursive" />
+
+            <Spinner android:id="@+id/spinner_item3"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:drawSelectorOnTop="true"
+                android:prompt="@string/spin"
+                android:entries="@array/items" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="89dp">
+
+            <TextView
+                android:text="Racourci 4 :"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView17"
+                android:textSize="24sp"
+                android:textColor="@android:color/holo_blue_dark"
+                android:fontFamily="cursive" />
+
+            <Spinner android:id="@+id/spinner_item4"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:drawSelectorOnTop="true"
+                android:prompt="@string/spin"
+                android:entries="@array/items" />
+
+        </LinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>
