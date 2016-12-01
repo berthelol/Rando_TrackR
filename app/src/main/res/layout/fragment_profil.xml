@@ -34,8 +34,8 @@
             android:layout_marginTop="-5dp"
             android:textSize="7sp"
             android:background="@drawable/mysavebutton"
-            android:onClick="onSave"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:onClick="onSave" />
     </LinearLayout>
 
     <TableLayout

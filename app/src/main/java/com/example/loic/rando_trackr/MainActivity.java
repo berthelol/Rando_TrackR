@@ -79,15 +79,16 @@ public class MainActivity extends AppCompatActivity
         }
               //add this line to display menu1 when the activity is loaded
        // displaySelectedScreen(R.id.profile);
+       // Localisation_Service test = new Localisation_Service();
+        //test.getposition();
     }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            //super.onBackPressed();
         }
     }
 
@@ -170,11 +171,5 @@ public class MainActivity extends AppCompatActivity
         displaySelectedScreen(0);
     }
 
-    public void onSave (View view)
-    {
-        Button savebtn = (Button) findViewById(R.id.savebutton);
-        savebtn.setBackgroundResource(R.drawable.mysavebutton);
-        Toast toast = Toast.makeText(getApplicationContext(), "Modifications saved", Toast.LENGTH_SHORT);
-        toast.show();
-    }
+
 }

@@ -24,30 +24,32 @@ import com.google.android.gms.location.LocationServices;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+
 import static android.content.Context.LOCATION_SERVICE;
 
 /**
  * Created by Loïc on 18/09/16.
  */
 
-public class Parcours extends Fragment implements LocationListener{
+public class Parcours extends Fragment implements LocationListener {
 
 
     private static final int MY_PERMISSION_ACCESS_COARSE_LOCATION = 11;
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 12;
 
     /* Position */
-    private static final int MINIMUM_TIME = 10000;  // 10s
-    private static final int MINIMUM_DISTANCE = 50; // 50m
+    private static final int MINIMUM_TIME = 1000;  // 1s
+    private static final int MINIMUM_DISTANCE = 1; // 1m
 
     /* GPS */
-    private String mProviderName;
-    private LocationManager mLocationManager;
-    private LocationListener mLocationListener;
+    public String mProviderName;
+    public LocationManager mLocationManager;
+    public LocationListener mLocationListener;
 
 
-   // LocationManager locationManager;
-   // String provider;
+    // LocationManager locationManager;
+    // String provider;
 
     //item from the layout
     TextView longitude;
@@ -71,25 +73,13 @@ public class Parcours extends Fragment implements LocationListener{
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles
         getActivity().setTitle("Parcours");
-        /*locationManager = (LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE);
-
-        if ( ContextCompat.checkSelfPermission( getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-
-            ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_COARSE_LOCATION  }, LocationServices.MY_PERMISSION_ACCESS_COURSE_LOCATION );
-        }
-
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,0,this);
-
-        provider = locationManager.getBestProvider(new Criteria(),false);*/
-
-
-        //code stackoverflow
 
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
         // Get the best provider between gps, network and passive
         Criteria criteria = new Criteria();
         mProviderName = mLocationManager.getBestProvider(criteria, true);
+
 
         // API 23: we have to check if ACCESS_FINE_LOCATION and/or ACCESS_COARSE_LOCATION permission are granted
         if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -120,22 +110,41 @@ public class Parcours extends Fragment implements LocationListener{
 
             // The ACCESS_COARSE_LOCATION is denied, then I request it and manage the result in
             // onRequestPermissionsResult() using the constant MY_PERMISSION_ACCESS_FINE_LOCATION
-            if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+            if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(getActivity(),
                         new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
                         MY_PERMISSION_ACCESS_COARSE_LOCATION);
             }
             // The ACCESS_FINE_LOCATION is denied, then I request it and manage the result in
             // onRequestPermissionsResult() using the constant MY_PERMISSION_ACCESS_FINE_LOCATION
-            if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+            if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(getActivity(),
-                        new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION },
+                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSION_ACCESS_FINE_LOCATION);
             }
 
         }
+        Button getlocation_button = (Button) getView().findViewById(R.id.getlocation_button);
+        getlocation_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
 
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,0,this);
+                    Location location = mLocationManager.getLastKnownLocation(mProviderName);
+                    onLocationChanged(location);
+                    return;
+                }
+
+            }
+        });
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, this);
 
     }
 
@@ -152,7 +161,7 @@ public class Parcours extends Fragment implements LocationListener{
         double lng = location.getLongitude();
         double alt = location.getAltitude();
         //allure
-        double bearing =location.getBearing();
+        double bearing = location.getBearing();
         double speed = location.getSpeed();
         double accuracy = location.getAccuracy();
 
@@ -163,12 +172,12 @@ public class Parcours extends Fragment implements LocationListener{
         speedtext.setText(String.valueOf(speed));
         accuracytext.setText(String.valueOf(accuracy));
 
-        Log.i("Latitude",String.valueOf(lat));
-        Log.i("Longitude",String.valueOf(lng));
-        Log.i("Altitude",String.valueOf(alt));
-        Log.i("Bearing",String.valueOf(bearing));
-        Log.i("Speed",String.valueOf(speed));
-        Log.i("Accuracy",String.valueOf(accuracy));
+        Log.i("Latitude", String.valueOf(lat));
+        Log.i("Longitude", String.valueOf(lng));
+        Log.i("Altitude", String.valueOf(alt));
+        Log.i("Bearing", String.valueOf(bearing));
+        Log.i("Speed", String.valueOf(speed));
+        Log.i("Accuracy", String.valueOf(accuracy));
     }
 
     @Override
@@ -185,5 +194,22 @@ public class Parcours extends Fragment implements LocationListener{
     public void onProviderDisabled(String provider) {
 
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mLocationManager.requestLocationUpdates(mProviderName, MINIMUM_TIME, MINIMUM_DISTANCE, this);
+    }
+
 
 }
