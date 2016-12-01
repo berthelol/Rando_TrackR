@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -38,6 +39,8 @@ public class Profil extends Fragment {
     private EditText firstname;
     private EditText lastname;
     private EditText urgency_number;
+    private CheckBox sms_check;
+    private CheckBox call_check;
     private Button savebutton ;
     private SharedPreferences sharedPreferences;
     @Nullable
@@ -62,11 +65,15 @@ public class Profil extends Fragment {
         firstname = (EditText) getView().findViewById(R.id.firstname);
         lastname = (EditText) getView().findViewById(R.id.lastname);
         urgency_number =(EditText) getView().findViewById(R.id.sos);
+        call_check = (CheckBox) getView().findViewById(R.id.call);
+        sms_check = (CheckBox) getView().findViewById(R.id.sms);
         savebutton= (Button) getView().findViewById(R.id.savebutton);
 
         firstname.setText(sharedPreferences.getString("firstname",""));
         lastname.setText(sharedPreferences.getString("lastname",""));
         urgency_number.setText(sharedPreferences.getString("phonenumber",""));
+        sms_check.setChecked(sharedPreferences.getBoolean("sms_checked",false));
+        call_check.setChecked(sharedPreferences.getBoolean("call_checked",false));
 
         /*try {
             SQLiteDatabase database = getContext().openOrCreateDatabase("RandoTrackR", Context.MODE_PRIVATE,null);
@@ -137,6 +144,23 @@ public class Profil extends Fragment {
             }
         });
 
+        sms_check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //change color of the save button to notify the values has changes
+                savebutton.setBackgroundResource(getResources().getIdentifier("@drawable/myunsavebutton", "drawable", getActivity().getPackageName()));
+                data_change=true;
+            }
+        });
+
+        call_check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //change color of the save button to notify the values has changes
+                savebutton.setBackgroundResource(getResources().getIdentifier("@drawable/myunsavebutton", "drawable", getActivity().getPackageName()));
+                data_change=true;
+            }
+        });
         //add listenner to save button
         final Button save_btn =(Button) getView().findViewById(R.id.savebutton);
         save_btn.setOnClickListener(new View.OnClickListener() {
@@ -149,6 +173,9 @@ public class Profil extends Fragment {
                     sharedPreferences.edit().putString("firstname",firstname.getText().toString()).apply();
                     sharedPreferences.edit().putString("lastname",lastname.getText().toString()).apply();
                     sharedPreferences.edit().putString("phonenumber",urgency_number.getText().toString()).apply();
+                    sharedPreferences.edit().putBoolean("sms_checked",sms_check.isChecked()).apply();
+                    sharedPreferences.edit().putBoolean("call_checked",call_check.isChecked()).apply();
+                    data_change=false;
             /*try {
                 SQLiteDatabase database = getContext().openOrCreateDatabase("RandoTrackR", Context.MODE_PRIVATE,null);
                 Cursor c =database.rawQuery("INSERT INTO RandoTrackR (firstname, lastname, nburgence)\n" +

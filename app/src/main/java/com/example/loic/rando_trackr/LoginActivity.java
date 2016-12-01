@@ -30,6 +30,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -40,6 +41,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 import static android.R.attr.password;
 import static android.R.id.message;
 import static android.R.string.cancel;
+import static com.example.loic.rando_trackr.R.id.sms;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -47,6 +49,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.android.gms.common.SignInButton;
 
 /**
  * A login screen that offers login via email/password.
@@ -63,6 +67,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mfirstname;
     private EditText mlastname;
     private EditText mphonenumber;
+    private CheckBox msmscheck;
+    private CheckBox mcallcheck;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -82,6 +88,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mfirstname = (EditText) findViewById(R.id.firstname);
         mlastname = (EditText) findViewById(R.id.lastname);
         mphonenumber = (EditText) findViewById(R.id.telephonenumber);
+        msmscheck = (CheckBox) findViewById(R.id.sms_check);
+        mcallcheck = (CheckBox) findViewById(R.id.call_check);
 
         Button SignInButton = (Button) findViewById(R.id.sign_in_button);
         SignInButton.setOnClickListener(new OnClickListener() {
@@ -110,14 +118,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String firstname = mfirstname.getText().toString();
         String lastname = mlastname.getText().toString();
         String phonenumber = mphonenumber.getText().toString();
-
-        Log.i("fistname",firstname);
-        Log.i("lastname",lastname);
-        Log.i("phonenumber",phonenumber);
+        Boolean sms = msmscheck.isChecked();
+        Boolean call = mcallcheck.isChecked();
 
         boolean cancel = false;
         View focusView = null;
-
+        //TODO
        /* // Check for a valid fistname.
         if (!firstname.isEmpty()) {
             mlastname.setError(getString(R.string.error_invalid_firstname));
@@ -142,41 +148,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // form field with an error.
             focusView.requestFocus();
         } else {
-            mAuthTask = new UserLoginTask(firstname,lastname,phonenumber);
+            mAuthTask = new UserLoginTask(firstname,lastname,phonenumber,sms,call);
             mAuthTask.execute((Void) null);
         }
     }
 
     private boolean isPhonenumbervalid(String phonenb) {
-        //TODO: Replace this with your own logic
         return phonenb.length() >= 9;
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-
-                // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE +
-                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                .CONTENT_ITEM_TYPE},
-
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return null;
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
-        }
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
     }
 
@@ -185,16 +172,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     }
 
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
 
     /**
      * Represents an asynchronous login/registration task used to authenticate
@@ -205,17 +182,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private String fistname;
         private String lastname;
         private String phonenumber;
+        private Boolean sms;
+        private Boolean call;
 
-        UserLoginTask(String firstame, String lastname,String phonenumber) {
+        UserLoginTask(String firstame, String lastname,String phonenumber,Boolean sms,Boolean call) {
             this.fistname = firstame;
             this.lastname = lastname;
             this.phonenumber = phonenumber;
+            this.sms = sms;
+            this.call = call;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-            // TODO: register the new account here.
             return true;
         }
 
@@ -230,9 +209,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 sharedPreferences.edit().putString("firstname",this.fistname).apply();
                 sharedPreferences.edit().putString("lastname",this.lastname).apply();
                 sharedPreferences.edit().putString("phonenumber",this.phonenumber).apply();
+                sharedPreferences.edit().putBoolean("call_checked",this.call).apply();
+                sharedPreferences.edit().putBoolean("sms_checked",this.sms).apply();
                 sharedPreferences.edit().putBoolean("alreadyregister",true).apply();
                 startActivity(intent);
-                //finish();
+                finish();
             } else {
                 mlastname.setError("Error connecting");
                 mlastname.requestFocus();
