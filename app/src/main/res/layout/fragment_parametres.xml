@@ -33,45 +33,21 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="87dp">
+            android:layout_height="70dp">
 
             <TextView
-                android:text="Racourci 1 :"
+                android:text="Raccourci 1 :"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView14"
                 android:textSize="24sp"
                 android:textColor="@android:color/holo_blue_dark"
                 android:fontFamily="cursive"
-                android:layout_width="wrap_content" />
+                android:layout_width="120dp" />
 
             <Spinner android:id="@+id/spinner_item1"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
                 android:drawSelectorOnTop="true"
-                android:prompt="@string/spin"
-                android:entries="@array/items" />
-
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="83dp">
-
-            <TextView
-                android:text="Racourci 2 :"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView15"
-                android:textSize="24sp"
-                android:textColor="@android:color/holo_blue_dark"
-                android:fontFamily="cursive" />
-
-            <Spinner android:id="@+id/spinner_item2"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:drawSelectorOnTop="true"
-                android:prompt="@string/spin"
-                android:entries="@array/items" />
+                android:layout_height="20dp" />
 
         </LinearLayout>
         <LinearLayout
@@ -80,8 +56,28 @@
             android:layout_height="70dp">
 
             <TextView
-                android:text="Racourci 3 :"
-                android:layout_width="wrap_content"
+                android:text="Raccourci 2 :"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView15"
+                android:textSize="24sp"
+                android:textColor="@android:color/holo_blue_dark"
+                android:fontFamily="cursive"
+                android:layout_width="120dp" />
+
+            <Spinner android:id="@+id/spinner_item2"
+                android:layout_width="fill_parent"
+                android:layout_height="20dp"
+                android:drawSelectorOnTop="true" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="70dp">
+
+            <TextView
+                android:text="Raccourci 3 :"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView16"
                 android:textSize="24sp"
@@ -90,20 +86,18 @@
 
             <Spinner android:id="@+id/spinner_item3"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:drawSelectorOnTop="true"
-                android:prompt="@string/spin"
-                android:entries="@array/items" />
+                android:layout_height="20dp"
+                android:drawSelectorOnTop="true"/>
 
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="89dp">
+            android:layout_height="70dp">
 
             <TextView
-                android:text="Racourci 4 :"
-                android:layout_width="wrap_content"
+                android:text="Raccourci 4 :"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView17"
                 android:textSize="24sp"
@@ -112,10 +106,8 @@
 
             <Spinner android:id="@+id/spinner_item4"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:drawSelectorOnTop="true"
-                android:prompt="@string/spin"
-                android:entries="@array/items" />
+                android:layout_height="20dp"
+                android:drawSelectorOnTop="true" />
 
         </LinearLayout>
     </LinearLayout>

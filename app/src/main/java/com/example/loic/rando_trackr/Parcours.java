@@ -24,6 +24,7 @@ import com.google.android.gms.location.LocationServices;
 
 import org.w3c.dom.Text;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -51,13 +52,13 @@ public class Parcours extends Fragment implements LocationListener {
     // LocationManager locationManager;
     // String provider;
 
-    //item from the layout
-    TextView longitude;
-    TextView latitude;
-    TextView altitude;
-    TextView bearingtext;
-    TextView speedtext;
-    TextView accuracytext;
+    //TextViews from the layout
+    TextView latitude_display;
+    TextView longitude_display;
+    TextView altitude_display;
+    TextView vitesse_display;
+    TextView distance_display;
+    TextView temps_display;
 
     @Nullable
     @Override
@@ -124,38 +125,18 @@ public class Parcours extends Fragment implements LocationListener {
             }
 
         }
-        Button getlocation_button = (Button) getView().findViewById(R.id.getlocation_button);
-        getlocation_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-
-                    Location location = mLocationManager.getLastKnownLocation(mProviderName);
-                    onLocationChanged(location);
-                    return;
-                }
-
-            }
-        });
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, this);
 
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        longitude = (TextView) getView().findViewById(R.id.longitude);
-        latitude = (TextView) getView().findViewById(R.id.latitude);
-        altitude = (TextView) getView().findViewById(R.id.altitude);
-        bearingtext = (TextView) getView().findViewById(R.id.bearing);
-        speedtext = (TextView) getView().findViewById(R.id.speed);
-        accuracytext = (TextView) getView().findViewById(R.id.accuracy);
+        longitude_display =(TextView) getView().findViewById(R.id.longitude_display);
+        latitude_display =(TextView) getView().findViewById(R.id.latitude_display);
+        altitude_display =(TextView) getView().findViewById(R.id.altitude_display);
+        vitesse_display =(TextView) getView().findViewById(R.id.vitesse_display);
+        distance_display =(TextView) getView().findViewById(R.id.distance_display);
+        temps_display =(TextView) getView().findViewById(R.id.temps_display);
 
         double lat = location.getLatitude();
         double lng = location.getLongitude();
@@ -165,12 +146,15 @@ public class Parcours extends Fragment implements LocationListener {
         double speed = location.getSpeed();
         double accuracy = location.getAccuracy();
 
-        latitude.setText(String.valueOf(lat));
-        longitude.setText(String.valueOf(lng));
-        altitude.setText(String.valueOf(alt));
-        bearingtext.setText(String.valueOf(bearing));
-        speedtext.setText(String.valueOf(speed));
-        accuracytext.setText(String.valueOf(accuracy));
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+
+        longitude_display.setText("Longitude\n"+String.valueOf(lng));
+        latitude_display.setText("Latitude\n"+String.valueOf(lat));
+        altitude_display.setText("Altitude\n"+String.valueOf(alt)+"m");
+        vitesse_display.setText("Vitesse\n"+df.format(speed)+"m/s");
+        distance_display.setText("Distance restante\n"+String.valueOf(accuracy));
+        temps_display.setText("Temps restant\n"+df.format(bearing));
 
         Log.i("Latitude", String.valueOf(lat));
         Log.i("Longitude", String.valueOf(lng));

@@ -53,31 +53,8 @@ public class MainActivity extends AppCompatActivity
         ft.replace(R.id.content_frame, fragment);
         ft.commit();
 
-       try
-        {
-            SQLiteDatabase database =this.openOrCreateDatabase("RandoTrackR",MODE_PRIVATE,null);
 
-            database.execSQL("CREATE TABLE IF NOT EXISTS user (firstname VARCHAR, lastname VARCHAR, nburgence VARCHAR)");
-           // database.execSQL("INSERT INTO user (firstname,lastname,nburgence) VALUES ('Loic','Berthelot','0677823818')");
-
-            /*Cursor c =database.rawQuery("SELECT * FROM user",null);
-
-            int firstnameindex = c.getColumnIndex("firstname");
-            int lastnameindex = c.getColumnIndex("lastname");
-            int nburgenceindex = c.getColumnIndex("nburgence");
-
-            c.moveToFirst();
-            while (c!=null)
-            {
-                Log.i("firstname:",c.getString(firstnameindex));
-                Log.i("lastname:",c.getString(lastnameindex));
-                c.moveToNext();
-            }*/
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-              //add this line to display menu1 when the activity is loaded
+        //add this line to display menu1 when the activity is loaded
        // displaySelectedScreen(R.id.profile);
        // Localisation_Service test = new Localisation_Service();
         //test.getposition();

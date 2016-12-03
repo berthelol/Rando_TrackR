@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#003F00</color>
     <color name="colorAccent">#007F00</color>
     <color name="greensavebutton">#ff669900</color>
+    <color name="lightgreen">#58857e</color>
 </resources>

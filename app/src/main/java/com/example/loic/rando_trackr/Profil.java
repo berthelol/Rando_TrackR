@@ -77,7 +77,10 @@ public class Profil extends Fragment {
 
         /*try {
             SQLiteDatabase database = getContext().openOrCreateDatabase("RandoTrackR", Context.MODE_PRIVATE,null);
-            Cursor c =database.rawQuery("SELECT * FROM user",null);
+
+
+            Cursor c =database.rawQuery("INSERT INTO User (CustomerName, ContactName, Address, City, PostalCode, Country)\n" +
+                    "VALUES ('Cardinal','Tom B. Erichsen','Skagen 21','Stavanger','4006','Norway');",null);
 
             int firstnameindex = c.getColumnIndex("firstname");
             int lastnameindex = c.getColumnIndex("lastname");

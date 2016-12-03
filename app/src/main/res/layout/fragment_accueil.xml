@@ -21,28 +21,28 @@
             android:text="TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView3"
+            android:id="@+id/option_1"
             android:layout_weight="1" />
 
         <TextView
             android:text="TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView7"
+            android:id="@+id/option_2"
             android:layout_weight="1" />
 
         <TextView
             android:text="TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView2"
+            android:id="@+id/option_3"
             android:layout_weight="1" />
 
         <TextView
             android:text="TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView5"
+            android:id="@+id/option_4"
             android:layout_weight="1" />
     </LinearLayout>
 

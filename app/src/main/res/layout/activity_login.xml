@@ -15,7 +15,7 @@
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="299dp">
 
         <LinearLayout
             android:id="@+id/email_login_form"
@@ -81,7 +81,7 @@
                 android:layout_weight="1">
 
                 <TextView
-                    android:text="Type de contact:"
+                    android:text="Comment contacter le numéro d'urgence:"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/textView9"
@@ -143,9 +143,12 @@
                     android:text="Commence ta rando!"
                     android:textColor="@android:color/white"
                     android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true" />
+                    android:layout_centerHorizontal="true"
+                    android:textAlignment="center"
+                    android:layout_marginTop="30dp" />
             </RelativeLayout>
 
         </LinearLayout>
     </ScrollView>
+
 </LinearLayout>
