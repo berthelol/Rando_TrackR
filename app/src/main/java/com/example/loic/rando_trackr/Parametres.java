@@ -18,8 +18,6 @@ import android.widget.Spinner;
 
 import java.util.ArrayList;
 
-import static com.google.android.gms.fitness.data.zzr.Qu;
-
 /**
  * Created by Loïc on 18/09/16.
  */

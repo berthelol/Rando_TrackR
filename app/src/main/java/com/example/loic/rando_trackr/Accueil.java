@@ -2,11 +2,13 @@ package com.example.loic.rando_trackr;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -65,11 +68,28 @@ public class Accueil extends Fragment {
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
 
+                // Customise the styling of the base map using a JSON object defined
+                // in a string resource file. First create a MapStyleOptions object
+                // from the JSON styles string, then pass this to the setMapStyle
+                // method of the GoogleMap object.
+                try {
+                    // Customise the styling of the base map using a JSON object defined
+                    // in a raw resource file.
+                    boolean success = googleMap.setMapStyle(
+                            MapStyleOptions.loadRawResourceStyle(
+                                    getContext(), R.raw.style_json));
+
+                    if (!success) {
+                        Log.e("error", "Style parsing failed.");
+                    }
+                } catch (Resources.NotFoundException e) {
+                    Log.e("error", "Can't find style. Error: ", e);
+                }
+
                 // For showing a move to my location button
                 if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
                     googleMap.setMyLocationEnabled(true);
-
                 } else {
                     // Show rationale and request permission.
                 }
@@ -79,7 +99,7 @@ public class Accueil extends Fragment {
                         .compassEnabled(true)
                         .rotateGesturesEnabled(false)
                         .tiltGesturesEnabled(false);*/
-                googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+               // googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
                 googleMap.setOnMyLocationChangeListener(myLocationChangeListener);
 
                 // For dropping a marker at a point on the Map
@@ -121,7 +141,6 @@ public class Accueil extends Fragment {
         this.textview_option3.setText(quick_info3.toString());
         this.textview_option4.setText(quick_info4.toString());
 
-
     }
     @Override
     public void onResume() {
@@ -156,7 +175,7 @@ public class Accueil extends Fragment {
                     .position(loc)
             .icon(BitmapDescriptorFactory.fromResource(R.drawable.mypositionmarker)));*/
             if(googleMap != null){
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 13.0f));
+              //  googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 13.0f));
             }
         }
     };

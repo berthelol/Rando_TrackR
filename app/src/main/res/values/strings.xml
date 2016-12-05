@@ -19,7 +19,10 @@
 
     <string name="error_field_required">This field is required</string>
 
-<string name="spin">TOTO</string>
+
+    <string name="style_json">
+
+  </string>
 
 
 </resources>
