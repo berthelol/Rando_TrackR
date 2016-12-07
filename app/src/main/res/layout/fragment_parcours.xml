@@ -113,14 +113,11 @@
 
         </LinearLayout>
 
-        <ScrollView
+        <ListView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ListView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </ScrollView>
+            android:layout_height="match_parent"
+            android:id="@+id/step_listview"
+            android:layout_marginTop="10dp" />
 
     </LinearLayout>
 

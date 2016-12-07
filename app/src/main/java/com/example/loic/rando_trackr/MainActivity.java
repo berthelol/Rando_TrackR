@@ -1,5 +1,6 @@
 package com.example.loic.rando_trackr;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -29,11 +30,12 @@ import static android.R.color.holo_orange_dark;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
+    MainActivity context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context =this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
@@ -116,7 +118,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new Meteo();
                 break;
             case R.id.parcours:
-                fragment = new Parcours();
+                fragment = new Parcours(context);
                 break;
             case R.id.physique:
                 fragment = new Physiques();

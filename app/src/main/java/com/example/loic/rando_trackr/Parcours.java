@@ -9,6 +9,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.location.LocationServices;
@@ -26,8 +28,6 @@ import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-
-import static android.content.Context.LOCATION_SERVICE;
 
 /**
  * Created by Loïc on 18/09/16.
@@ -48,10 +48,6 @@ public class Parcours extends Fragment implements LocationListener {
     public LocationManager mLocationManager;
     public LocationListener mLocationListener;
 
-
-    // LocationManager locationManager;
-    // String provider;
-
     //TextViews from the layout
     TextView latitude_display;
     TextView longitude_display;
@@ -59,6 +55,18 @@ public class Parcours extends Fragment implements LocationListener {
     TextView vitesse_display;
     TextView distance_display;
     TextView temps_display;
+
+    ListView lv;
+    MainActivity context;
+
+    public Parcours (MainActivity mainActivity)
+    {
+        context= mainActivity;
+    }
+    public Parcours ()
+    {
+
+    }
 
     @Nullable
     @Override
@@ -127,6 +135,13 @@ public class Parcours extends Fragment implements LocationListener {
         }
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, this);
 
+        //custom listview
+        String [] label={"Parc montsouris","","Montparnasse","Alesia","Tour Eiffel","fdbfdfdsf","dfdf","dfbdsfbd","dbsdf"};
+        String [] data={"150","245","27","674","399","373","733","879","689"};
+
+        lv=(ListView) getView().findViewById(R.id.step_listview);
+        lv.setAdapter(new Step_ListView_Adapter(context, label,data));
+
     }
 
     @Override
@@ -155,13 +170,6 @@ public class Parcours extends Fragment implements LocationListener {
         vitesse_display.setText("Vitesse\n"+df.format(speed)+"m/s");
         distance_display.setText("Distance restante\n"+String.valueOf(accuracy));
         temps_display.setText("Temps restant\n"+df.format(bearing));
-
-        Log.i("Latitude", String.valueOf(lat));
-        Log.i("Longitude", String.valueOf(lng));
-        Log.i("Altitude", String.valueOf(alt));
-        Log.i("Bearing", String.valueOf(bearing));
-        Log.i("Speed", String.valueOf(speed));
-        Log.i("Accuracy", String.valueOf(accuracy));
     }
 
     @Override
@@ -182,7 +190,7 @@ public class Parcours extends Fragment implements LocationListener {
     @Override
     public void onResume() {
         super.onResume();
-        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
