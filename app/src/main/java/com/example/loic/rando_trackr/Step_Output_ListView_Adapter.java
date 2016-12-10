@@ -15,7 +15,7 @@ import android.widget.Toast;
  * Created by loic on 07/12/2016.
  */
 
-public class Step_ListView_Adapter extends BaseAdapter {
+public class Step_Output_ListView_Adapter extends BaseAdapter {
 
     Context context;
 
@@ -23,8 +23,9 @@ public class Step_ListView_Adapter extends BaseAdapter {
 
     String[] datainfo;
     private static LayoutInflater inflater=null;
-    public Step_ListView_Adapter(MainActivity mainActivity, String[] step_name, String [] datainfo ) {
-        context=mainActivity;
+    //constructor
+    public Step_Output_ListView_Adapter(MainActivity mainActivity, String[] step_name, String [] datainfo ) {
+        this.context=mainActivity;
 
         this.step_name=step_name;
         this.datainfo=datainfo;
@@ -57,7 +58,6 @@ public class Step_ListView_Adapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
         Holder holder=new Holder();
         View rowView;
         rowView = inflater.inflate(R.layout.step_listview_layout, null);

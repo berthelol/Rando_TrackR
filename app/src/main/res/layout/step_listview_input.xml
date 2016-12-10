@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:srcCompat="@drawable/step_finish_flag"
+        android:id="@+id/step_flag" />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="214dp"
+        android:layout_height="50dp"
+        android:id="@+id/textinputlayout">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint=""
+            android:id="@+id/step_input" />
+
+
+    </android.support.design.widget.TextInputLayout>
+
+    <ImageView
+        android:layout_width="36dp"
+        android:layout_height="33dp"
+        app:srcCompat="@drawable/location_failed"
+        android:id="@+id/location_status" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/delete"
+        android:id="@+id/delete_icon" />
+
+</LinearLayout>

@@ -18,11 +18,7 @@
     <string name="error_invalid_phonenumber">Numero de téléphone invalide</string>
 
     <string name="error_field_required">This field is required</string>
-
-
-    <string name="style_json">
-
-  </string>
+    <string name="API_KEY">AIzaSyAXGZr8iYmXV499nX-tnuqPuSV_TBefAQA</string>
 
 
 </resources>

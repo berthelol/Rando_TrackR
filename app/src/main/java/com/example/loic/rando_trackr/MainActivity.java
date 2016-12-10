@@ -3,6 +3,7 @@ package com.example.loic.rando_trackr;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -20,8 +21,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import static android.R.attr.label;
 import static android.R.color.holo_green_dark;
 import static android.R.color.holo_orange_dark;
+import static java.security.AccessController.getContext;
 
 
 /**
@@ -85,10 +88,36 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.alert) {
-            Toast toast = Toast.makeText(getApplicationContext(), "Alert", Toast.LENGTH_LONG);
+
+        if (id == R.id.deletedb) {
+            //clearDB
+            SQLiteDatabase randoTrackRDB = openOrCreateDatabase("RandoTrackR",MODE_PRIVATE,null);
+            deleteDatabase("RandoTrackR");
+            Toast toast = Toast.makeText(getApplicationContext(), "Db deleted", Toast.LENGTH_LONG);
             toast.show();
+            return true;
+        }
+        if (id == R.id.showdb) {
+            //clearDB
+            SQLiteDatabase randoTrackRDB = openOrCreateDatabase("RandoTrackR",MODE_PRIVATE,null);
+
+            Cursor resultSet;
+            try {
+                //Fetch the data from DB
+                resultSet = randoTrackRDB.rawQuery("Select * from Waypoint",null);
+                while (resultSet.moveToNext()) {
+                    String name = resultSet.getString(resultSet.getColumnIndex("Adresse"));
+                    String type = resultSet.getString(resultSet.getColumnIndex("Type"));
+                    String lat = resultSet.getString(resultSet.getColumnIndex("Latitude"));
+                    String lng = resultSet.getString(resultSet.getColumnIndex("Longitude"));
+                    int waypointnb = resultSet.getInt(resultSet.getColumnIndex("Waypointnb"));
+
+                    Log.i("DB item","Waypoint: "+waypointnb+" Adresse: "+name+" Type: "+type+" Latitude: "+lat+" Longitude: "+lng);
+                }
+                resultSet.close();
+            } catch (SQLiteException e){
+                e.printStackTrace();
+            }
             return true;
         }
 

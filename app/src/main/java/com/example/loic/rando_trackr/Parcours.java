@@ -9,25 +9,17 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.location.LocationServices;
-
-import org.w3c.dom.Text;
-
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 /**
  * Created by Loïc on 18/09/16.
@@ -140,8 +132,7 @@ public class Parcours extends Fragment implements LocationListener {
         String [] data={"150","245","27","674","399","373","733","879","689"};
 
         lv=(ListView) getView().findViewById(R.id.step_listview);
-        lv.setAdapter(new Step_ListView_Adapter(context, label,data));
-
+        lv.setAdapter(new Step_Output_ListView_Adapter(context, label,data));
     }
 
     @Override

@@ -17,7 +17,8 @@ public enum Quick_info {
     Kcal_depensees("Kcal dépensées",8),
     Distance_restante("Distance restante",9),
     Distance_parcouru("Distance parcouru",10),
-    Distance_prochaine_etape("Distance prochaine étape",11);
+    Distance_prochaine_etape("Distance prochaine étape",11),
+    Not_defined("Not Defined",12);
 
     //the name that will be displayed in the spinner and in the home view
     private String label;

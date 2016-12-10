@@ -139,7 +139,7 @@
                     style="?android:textAppearanceSmall"
                     android:layout_width="215dp"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/myurgencebutton"
+                    android:background="@drawable/randotrackerbutton"
                     android:text="Commence ta rando!"
                     android:textColor="@android:color/white"
                     android:layout_alignParentTop="true"

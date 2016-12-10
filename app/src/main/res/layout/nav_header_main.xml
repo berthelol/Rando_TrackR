@@ -9,13 +9,13 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="152dp"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
             app:srcCompat="@drawable/randotrackr"
             android:layout_weight="0.76"
             android:layout_below="@+id/textView"
             android:layout_alignParentStart="true"
-        android:layout_alignBottom="@+id/textView"
-        android:layout_height="100dp" />
+            android:layout_alignBottom="@+id/textView"
+            android:layout_height="100dp" />
 
     <TextView
         android:layout_width="match_parent"
@@ -32,7 +32,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="35dp"
-            app:srcCompat="@drawable/user"
+            app:srcCompat="@drawable/man"
             android:id="@+id/profile"
             android:layout_marginLeft="200dp"
             android:layout_weight="0.13"
