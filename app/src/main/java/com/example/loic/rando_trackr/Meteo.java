@@ -431,7 +431,7 @@ public class Meteo extends Fragment {
         txt_temp_j3.setText(Double.toString(weatherj3.getTemp()));
         txt_temp_j4.setText(Double.toString(weatherj4.getTemp()));
 
-
+        txt_city.setText(weatherh1.getCity());
     }
 
     public class WeatherHttpClient { //http://api.openweathermap.org/data/2.5/forecast/?lat=35&lon=139&APPID=9b733320ec0639446758235978d2bdab
