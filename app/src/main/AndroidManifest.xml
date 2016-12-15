@@ -15,11 +15,14 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
+    <!-- To access facebook login -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:allowBackup="true"
         android:icon="@drawable/randotrackr"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:windowSoftInputMode="stateHidden"
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
@@ -37,9 +40,9 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/. 
         -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/API_KEY" />
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/API_KEY" />
+        <!-- Add facebook sdk using the facebook app id in my developer section -->
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name">

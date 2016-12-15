@@ -13,14 +13,15 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="214dp"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:id="@+id/textinputlayout">
 
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:hint=""
-            android:id="@+id/step_input" />
+            android:id="@+id/step_input"
+            android:singleLine="true" />
 
 
     </android.support.design.widget.TextInputLayout>

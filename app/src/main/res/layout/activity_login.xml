@@ -8,6 +8,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context="com.example.loic.rando_trackr.LoginActivity">
 
     <!-- Login progress -->
@@ -15,7 +17,7 @@
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
-        android:layout_height="299dp">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/email_login_form"
@@ -37,7 +39,7 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPersonName"
                     android:maxLines="1"
-                    />
+                    android:text=" " />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -132,11 +134,10 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <Button
                     android:id="@+id/sign_in_button"
-                    style="?android:textAppearanceSmall"
                     android:layout_width="215dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/randotrackerbutton"
@@ -145,10 +146,47 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:textAlignment="center"
-                    android:layout_marginTop="30dp" />
+                    android:textAllCaps="false"/>
             </RelativeLayout>
+
 
         </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="OU"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="36sp"
+                android:fontFamily="cursive"
+                android:textColor="@android:color/holo_blue_dark"
+                android:id="@+id/separator"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/login_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

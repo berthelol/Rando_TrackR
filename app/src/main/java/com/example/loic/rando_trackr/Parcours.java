@@ -48,23 +48,13 @@ public class Parcours extends Fragment implements LocationListener {
     TextView distance_display;
     TextView temps_display;
 
+    //Output listview
     ListView lv;
-    MainActivity context;
-
-    public Parcours (MainActivity mainActivity)
-    {
-        context= mainActivity;
-    }
-    public Parcours ()
-    {
-
-    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //returning our layout file
-        //change R.layout.yourlayoutfilename for each of your fragments
         return inflater.inflate(R.layout.fragment_parcours, container, false);
     }
 
@@ -127,12 +117,9 @@ public class Parcours extends Fragment implements LocationListener {
         }
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, this);
 
-        //custom listview
-        String [] label={"Parc montsouris","","Montparnasse","Alesia","Tour Eiffel","fdbfdfdsf","dfdf","dfbdsfbd","dbsdf"};
-        String [] data={"150","245","27","674","399","373","733","879","689"};
-
         lv=(ListView) getView().findViewById(R.id.step_listview);
-        lv.setAdapter(new Step_Output_ListView_Adapter(context, label,data));
+        lv.setItemsCanFocus(true);
+        lv.setAdapter(new Step_Output_ListView_Adapter(getContext()));
     }
 
     @Override

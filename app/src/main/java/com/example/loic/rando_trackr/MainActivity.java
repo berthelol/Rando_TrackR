@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new Meteo();
                 break;
             case R.id.parcours:
-                fragment = new Parcours(context);
+                fragment = new Parcours();
                 break;
             case R.id.physique:
                 fragment = new Physiques();

@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 
 import com.google.android.gms.maps.MapView;
@@ -30,9 +31,11 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONException;
@@ -44,12 +47,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static android.R.attr.configChanges;
 import static android.R.attr.mode;
 import static android.R.attr.name;
 import static android.R.attr.stopWithTask;
@@ -57,8 +62,11 @@ import static android.R.id.list;
 import static android.R.id.switch_widget;
 import static android.content.Context.MODE_PRIVATE;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
+import static android.media.CamcorderProfile.get;
 import static com.google.android.gms.analytics.internal.zzy.es;
 import static com.google.android.gms.appdatasearch.DocumentSection.gm;
+import static com.google.android.gms.wearable.DataMap.TAG;
+import static com.google.firebase.crash.FirebaseCrash.log;
 
 
 /**
@@ -68,8 +76,14 @@ public class Map extends Fragment {
 
     //Database randotrackR
     SQLiteDatabase randoTrackRDB;
-    //Second list of waypoints
+
+    //Number helping not asking to much to google API
+    int waiting =0;
+
+    //List of waypoints
     ArrayList <Waypoint> waypoints;
+    //List of lines drawn on the map for the parcours
+    Polyline polylines;
 
     //Map ressources
     MapView mMapView;
@@ -87,15 +101,21 @@ public class Map extends Fragment {
     //Stored last location
     LatLng lastlocation =null;
 
+    //Boolean to signal when position is created
+    Boolean position_ready;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_accueil_map, container, false);
+
+        //Initialize position_ready
+        this.position_ready=false;
 
         //Initialize the randotrackR DB
         this.randoTrackRDB = getContext().openOrCreateDatabase("RandoTrackR",MODE_PRIVATE,null);
         this.randoTrackRDB.execSQL("CREATE TABLE IF NOT EXISTS Waypoint(Waypointnb INTEGER,Adresse VARCHAR,Type VARCHAR,Latitude REAL,Longitude REAL);");
 
-        //Initialize the markerspoints
+        //Initialize the way points array
         waypoints = new ArrayList<Waypoint>();
 
         //Initialize the map view
@@ -126,11 +146,13 @@ public class Map extends Fragment {
                     public void onMapClick(LatLng point) {
                         //Add in the bdd a marker
                         randoTrackRDB.execSQL("INSERT INTO Waypoint VALUES("+waypoints.size()+",'','COORD',"+point.latitude+","+point.longitude+");");
+
                         //Adding the marker
                         googleMap.addMarker(new MarkerOptions()
                                 .position(point)
-                                .title(""+waypoints.size()+1)
+                                .title(""+(waypoints.size()+1))
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+
                         waypoints.add(new Waypoint(waypoints.size()+1,"","COORD",point.latitude,point.longitude));
                         //Display on the map
                         if(lastlocation!=null)
@@ -181,13 +203,6 @@ public class Map extends Fragment {
                 // googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
                 googleMap.setOnMyLocationChangeListener(myLocationChangeListener);
 
-                // For dropping a marker at a point on the Map
-                // LatLng sydney = new LatLng(-34, 151);
-                // googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
-
-                // For zooming automatically to the location of the marker
-                //CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
-                // googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             }
         });
         return rootView;
@@ -246,13 +261,54 @@ public class Map extends Fragment {
         @Override
         public void onMyLocationChange(Location location) {
             LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
+            waiting++;
+
+            if(!position_ready&&googleMap != null)
+            {
+                //First zoom to your location but false afterwards we don't want to zoom on each mouvement
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 13.0f));
+            }
+           position_ready=true;
             lastlocation=loc;
             if(googleMap != null){
-                //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 13.0f));
-                refresh_parcours(loc);
+                test_if_position_is_at_waypoint(loc);
+                //add circle to the current location to trace our parcours
+                googleMap.addCircle(new CircleOptions().center(loc)
+                        .radius(2)
+                        .strokeColor(Color.BLUE)
+                        .fillColor(Color.GREEN));
+                //if waiting is a multiple of 5
+                if(waiting%5==0)
+                {
+                    if(polylines!=null)
+                        //erase the polylines
+                        polylines.remove();
+                    //refresh parcours
+                    refresh_parcours(loc);
+                }
             }
         }
     };
+    public void test_if_position_is_at_waypoint(LatLng pos)
+    {
+       DecimalFormat df1 = new DecimalFormat("#.#####");
+        Log.i("Point user","lng: "+df1.format(pos.longitude) + "  lat: "+df1.format(pos.latitude));
+        //We check every way point (expect the first one which is our position)
+        //We could've check only the next one but we assume the user can use a shortcut
+        // to go directly to the n+1
+        for(int i=0; i<waypoints.size();i++)
+        {
+            if(i!=0)
+            {
+                Log.i("Marker google map","Number "+waypoints.get(i).waypointnb+" lng: "+df1.format(waypoints.get(i).longitude) + " lat: "+df1.format(waypoints.get(i).latitude));
+                LatLng waypointlatlng = new LatLng(waypoints.get(i).latitude,waypoints.get(i).longitude);
+                if(df1.format(waypointlatlng.latitude).equals(df1.format(pos.latitude))||df1.format(waypointlatlng.longitude).equals(df1.format(pos.longitude)))
+                {
+                    Toast.makeText(getContext(),"Arrived at step "+waypoints.get(i).waypointnb,Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
 
     public void refresh_parcours(LatLng myposition) {
         //Clear the arraylist waypoints
@@ -431,7 +487,7 @@ public class Map extends Fragment {
 
             JSONObject jObject;
             List<List<HashMap<String, String>>> routes = null;
-            Log.i("JSON",jsonData[0]);
+            Log.i("JSON from google API",jsonData[0]);
             try{
                 jObject = new JSONObject(jsonData[0]);
 
@@ -456,7 +512,6 @@ public class Map extends Fragment {
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
             ArrayList<LatLng> points = null;
             PolylineOptions lineOptions = null;
-            MarkerOptions markerOptions = new MarkerOptions();
             if(result==null)
             {
                 return;
@@ -487,7 +542,7 @@ public class Map extends Fragment {
             }
 
             // Drawing polyline in the Google Map for the i-th route
-            googleMap.addPolyline(lineOptions);
+             polylines = googleMap.addPolyline(lineOptions);
         }
     }
 }

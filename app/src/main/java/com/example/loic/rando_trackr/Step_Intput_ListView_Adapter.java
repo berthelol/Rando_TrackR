@@ -18,6 +18,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -207,6 +210,7 @@ public class Step_Intput_ListView_Adapter extends BaseAdapter {
             public void onClick(View v) {
                 //Creating the geocding object if needed
                 LatLng geocoded_adress = null;
+                String formatted_address = holder.stepinput.getText().toString();
                 //Check if the new adress is geocodable
                 if(myItems.get(position).type.equals("ADRESSE"))
                 {
@@ -218,16 +222,21 @@ public class Step_Intput_ListView_Adapter extends BaseAdapter {
                     geocoder.execute(holder.stepinput.getText().toString());
                     try {
                         //fetching the response
-                        geocoded_adress = geocoder.get();
+                        JSONObject jsonresponse =geocoder.get();
+                        formatted_address = jsonresponse.getString("formatted_address");
+                        geocoded_adress = new LatLng(jsonresponse.getDouble("lat"),jsonresponse.getDouble("lng"));
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }catch (JSONException e) {
                         e.printStackTrace();
                     }
                     if(geocoded_adress!=null)
                     {
                         Toast toast = Toast.makeText(context, "Location trouvé", Toast.LENGTH_LONG);
                         toast.show();
+                        holder.stepinput.setText(formatted_address.toString());
                         holder.geocode_status.setImageResource(R.drawable.location_sucess);
                     }else {
                         Toast toast = Toast.makeText(context, "Erreur localisation, soyez plus précis", Toast.LENGTH_LONG);
@@ -257,7 +266,7 @@ public class Step_Intput_ListView_Adapter extends BaseAdapter {
                     }else
                     {
                         //add lat and lng to data
-                        randoTrackRDB.execSQL("UPDATE Waypoint SET Adresse = \'"+holder.stepinput.getText().toString()+"\' , Latitude = "+geocoded_adress.latitude+" , Longitude = "+geocoded_adress.longitude+" WHERE Waypointnb="+(position+1)+";");
+                        randoTrackRDB.execSQL("UPDATE Waypoint SET Adresse = \'"+formatted_address+"\' , Latitude = "+geocoded_adress.latitude+" , Longitude = "+geocoded_adress.longitude+" WHERE Waypointnb="+(position+1)+";");
 
                     }
                         Toast toast = Toast.makeText(context, "Modifications effectuées", Toast.LENGTH_SHORT);
