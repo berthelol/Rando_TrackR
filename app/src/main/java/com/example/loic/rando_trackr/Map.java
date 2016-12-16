@@ -1,5 +1,4 @@
 package com.example.loic.rando_trackr;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -8,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,7 +20,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
+import com.example.loic.rando_trackr.Map_direction.DirectionJSONParser;
+import com.example.loic.rando_trackr.Map_direction.ParserTask;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 
@@ -38,7 +37,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -54,19 +52,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static android.R.attr.configChanges;
-import static android.R.attr.mode;
-import static android.R.attr.name;
-import static android.R.attr.stopWithTask;
-import static android.R.id.list;
-import static android.R.id.switch_widget;
 import static android.content.Context.MODE_PRIVATE;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 import static android.media.CamcorderProfile.get;
-import static com.google.android.gms.analytics.internal.zzy.es;
-import static com.google.android.gms.appdatasearch.DocumentSection.gm;
-import static com.google.android.gms.wearable.DataMap.TAG;
-import static com.google.firebase.crash.FirebaseCrash.log;
 
 
 /**
@@ -348,9 +335,25 @@ public class Map extends Fragment {
             if (!waypoints.isEmpty()) {
                 String url = getDirectionsUrl(waypoints);
 
-                DownloadTask downloadTask = new DownloadTask();
+                Connection_Handler ask_google_API = new Connection_Handler();
+                ask_google_API.execute(url);
 
-                downloadTask.execute(url);
+                try {
+                   String result = ask_google_API.get();
+
+                    ParserTask parserTask = new ParserTask();
+
+                    // Invokes the thread for parsing the JSON data
+                    parserTask.execute(result);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+               /* DownloadTask downloadTask = new DownloadTask();
+
+                downloadTask.execute(url);*/
             }
         } catch (SQLiteException e) {
             e.printStackTrace();
@@ -450,7 +453,7 @@ public class Map extends Fragment {
         return data;
     }
     // Fetches data from url passed
-    private class DownloadTask extends AsyncTask<String, Void, String> {
+    /*private class DownloadTask extends AsyncTask<String, Void, String> {
 
         // Downloading data in non-ui thread
         @Override
@@ -461,6 +464,8 @@ public class Map extends Fragment {
 
             try{
                 // Fetching the data from web service
+
+
                 data = downloadUrl(url[0]);
             }catch(Exception e){
                 Log.d("Background Task",e.toString());
@@ -474,12 +479,12 @@ public class Map extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            ParserTask parserTask = new ParserTask();
+            com.example.loic.rando_trackr.Map_direction.ParserTask parserTask = new com.example.loic.rando_trackr.Map_direction.ParserTask();
 
             // Invokes the thread for parsing the JSON data
             parserTask.execute(result);
         }
-    }
+    }*/
     private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String,String>>>> {
 
         @Override
@@ -493,8 +498,8 @@ public class Map extends Fragment {
 
                     if(!jObject.getString("status").equals("OK")){
                         Log.e("ERROR","NO LOCATION FOUND:"+jObject.getString("status"));
-                        Toast toast = Toast.makeText(getContext(), "ERREUR parcours non trouvé", Toast.LENGTH_LONG);
-                        toast.show();
+//                        Toast toast = Toast.makeText(getContext(), "ERREUR parcours non trouvé", Toast.LENGTH_LONG);
+                      //  toast.show();
                         return null;
                     }
 

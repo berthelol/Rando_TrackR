@@ -3,6 +3,7 @@ package com.example.loic.rando_trackr;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.concurrent.ExecutionException;
+
+import static android.support.v7.widget.AppCompatDrawableManager.get;
+
 
 /**
  * Created by Loïc on 18/09/16.
@@ -255,6 +260,160 @@ public class Meteo extends Fragment {
 
 
     }
+    private void weatherUpdate()
+    {
+        //Weather web site API
+        final String BASE_URL = "http://api.openweathermap.org/data/2.5/forecast/?";
+        //Weather web site API KEY
+        final String API_KEY = getResources().getString(R.string.weather_API_KEY);
+        // Get the new weather
+        Connection_Handler ask_for_weather = new Connection_Handler();
+        //Execute the request
+        ask_for_weather.execute(BASE_URL+"lat=35&lon=139"+"&APPID="+API_KEY);
+
+        String response= null;
+        try {
+            //Wait for the data to be uploaded (asynchrone)
+            response = ask_for_weather.get();
+            Log.i("Weather Content",response);
+            //Extract weather using the response of the API
+            extractWeatherFromResponse(new JSONObject(response));
+
+            //Update the view
+            txt_temp_h1.setText(Double.toString(weatherh1.getTemp()));
+            txt_temp_h2.setText(Double.toString(weatherh2.getTemp()));
+            txt_temp_h3.setText(Double.toString(weatherh3.getTemp()));
+            txt_temp_h4.setText(Double.toString(weatherh4.getTemp()));
+            txt_temp_j1.setText(Double.toString(weatherj1.getTemp()));
+            txt_temp_j2.setText(Double.toString(weatherj2.getTemp()));
+            txt_temp_j3.setText(Double.toString(weatherj3.getTemp()));
+            txt_temp_j4.setText(Double.toString(weatherj4.getTemp()));
+
+            txt_city.setText(weatherh1.getCity());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*public class WeatherHttpClient { //http://api.openweathermap.org/data/2.5/forecast/?lat=35&lon=139&APPID=9b733320ec0639446758235978d2bdab
+
+        private String BASE_URL = "http://api.openweathermap.org/data/2.5/forecast/?";
+        private String IMG_URL = "http://openweathermap.org/img/w/";
+        private String APPID = "&APPID=9b733320ec0639446758235978d2bdab"; // id to be allowed to get the meteo data from OpenWeatherMap
+
+        public String getWeatherData(String location) {
+            HttpURLConnection con = null ;
+            InputStream is = null;
+
+            try {
+                URL url = new URL(BASE_URL + location + APPID);
+                //con.setRequestMethod("GET");
+               // con.setDoInput(true);
+               // con.setDoOutput(true);
+                con = (HttpURLConnection) url.openConnection();
+                con.connect();
+
+
+                // Reading data from url
+                is = con.getInputStream();
+
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+                StringBuffer sb  = new StringBuffer();
+
+                String line = "";
+                while( ( line = br.readLine())  != null){
+                    sb.append(line);
+                }
+
+                br.close();
+                return sb.toString();
+
+
+
+                //MATT
+                // Let's read the response
+                StringBuffer buffer = new StringBuffer();
+                is = con.getInputStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                String line = null;
+                while ( (line = br.readLine()) != null )
+                    buffer.append(line + "rn");
+
+                is.close();
+                con.disconnect();
+                return buffer.toString();
+            }
+            catch(Throwable t) {
+                t.printStackTrace();
+            }
+            finally {
+                try { is.close(); } catch(Throwable t) {}
+                try { con.disconnect(); } catch(Throwable t) {}
+            }
+
+            return null;
+
+        }
+
+        public byte[] getImage(String code) {
+            HttpURLConnection con = null ;
+            InputStream is = null;
+            try {
+                con = (HttpURLConnection) ( new URL(IMG_URL + code)).openConnection();
+                con.setRequestMethod("GET");
+                con.setDoInput(true);
+                con.setDoOutput(true);
+                con.connect();
+
+                // Let's read the response
+                is = con.getInputStream();
+                byte[] buffer = new byte[1024];
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+                while ( is.read(buffer) != -1)
+                    baos.write(buffer);
+
+                return baos.toByteArray();
+            }
+            catch(Throwable t) {
+                t.printStackTrace();
+            }
+            finally {
+                try { is.close(); } catch(Throwable t) {}
+                try { con.disconnect(); } catch(Throwable t) {}
+            }
+
+            return null;
+
+        }
+    }*/
+
+    // EXAMPLE OF JSON RESPONSE FROM OPENWEATHERMAP
+    /*
+    {"cod":"200","message":0.0048,"city":
+        {"id":1851632,"name":"Shuzenji","coord":
+            {"lon":138.933334,"lat":34.966671}
+        ,"country":"JP","population":0}
+    ,"cnt":41,"list":[
+        {"dt":1481814000
+        ,"main":
+            {"temp":284.14,"temp_min":284.135,"temp_max":284.14,"pressure":1014.61,"sea_level":1024.26,"grnd_level":1014.61,"humidity":100,"temp_kf":0}
+        ,"weather":[
+            {"id":804,"main":"Clouds","description":"overcast clouds","icon":"04n"}
+        ]
+        ,"clouds":
+            {"all":92}
+        ,"wind":
+            {"speed":0.84,"deg":54.5002}
+        ,"sys":
+            {"pod":"n"}
+        ,"dt_txt":"2016-12-15 15:00:00"}
+     */
 
     private void extractWeatherFromResponse(JSONObject jObj) {
 
@@ -344,37 +503,11 @@ public class Meteo extends Fragment {
             e.printStackTrace();
         }
     }
-
-
-    // EXAMPLE OF JSON RESPONSE FROM OPENWEATHERMAP
     /*
-    {"cod":"200","message":0.0048,"city":
-        {"id":1851632,"name":"Shuzenji","coord":
-            {"lon":138.933334,"lat":34.966671}
-        ,"country":"JP","population":0}
-    ,"cnt":41,"list":[
-        {"dt":1481814000
-        ,"main":
-            {"temp":284.14,"temp_min":284.135,"temp_max":284.14,"pressure":1014.61,"sea_level":1024.26,"grnd_level":1014.61,"humidity":100,"temp_kf":0}
-        ,"weather":[
-            {"id":804,"main":"Clouds","description":"overcast clouds","icon":"04n"}
-        ]
-        ,"clouds":
-            {"all":92}
-        ,"wind":
-            {"speed":0.84,"deg":54.5002}
-        ,"sys":
-            {"pod":"n"}
-        ,"dt_txt":"2016-12-15 15:00:00"}
-     */
-
-    /*
-        On récupère un objet JSON extrait précédement d'un url, et on extrait les données de l'objet
-        JSON pour les placer dans une classe Weather et ensuite les utiliser
-     */
+       On récupère un objet JSON extrait précédement d'un url, et on extrait les données de l'objet
+       JSON pour les placer dans une classe Weather et ensuite les utiliser
+    */
     private Weather createWeather(JSONObject jObj, float lat, float lon, String city) {
-
-
 
         // We start extracting the info
         Weather weather = new Weather();
@@ -409,103 +542,4 @@ public class Meteo extends Fragment {
         }
 
     }
-
-    private void weatherUpdate()
-    {
-        // Get the new weather
-        String response = ((new WeatherHttpClient()).getWeatherData("lat=35&lon=139")); // A choper de Loic
-
-        // Translate from string to weather object
-        try {
-            extractWeatherFromResponse(new JSONObject(response));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        txt_temp_h1.setText(Double.toString(weatherh1.getTemp()));
-        txt_temp_h2.setText(Double.toString(weatherh2.getTemp()));
-        txt_temp_h3.setText(Double.toString(weatherh3.getTemp()));
-        txt_temp_h4.setText(Double.toString(weatherh4.getTemp()));
-        txt_temp_j1.setText(Double.toString(weatherj1.getTemp()));
-        txt_temp_j2.setText(Double.toString(weatherj2.getTemp()));
-        txt_temp_j3.setText(Double.toString(weatherj3.getTemp()));
-        txt_temp_j4.setText(Double.toString(weatherj4.getTemp()));
-
-
-    }
-
-    public class WeatherHttpClient { //http://api.openweathermap.org/data/2.5/forecast/?lat=35&lon=139&APPID=9b733320ec0639446758235978d2bdab
-
-        private String BASE_URL = "http://api.openweathermap.org/data/2.5/forecast/?";
-        private String IMG_URL = "http://openweathermap.org/img/w/";
-        private String APPID = "&APPID=9b733320ec0639446758235978d2bdab"; // id to be allowed to get the meteo data from OpenWeatherMap
-
-        public String getWeatherData(String location) {
-            HttpURLConnection con = null ;
-            InputStream is = null;
-
-            try {
-                con = (HttpURLConnection) ( new URL(BASE_URL + location + APPID)).openConnection();
-                con.setRequestMethod("GET");
-                con.setDoInput(true);
-                con.setDoOutput(true);
-                con.connect();
-
-                // Let's read the response
-                StringBuffer buffer = new StringBuffer();
-                is = con.getInputStream();
-                BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                String line = null;
-                while ( (line = br.readLine()) != null )
-                    buffer.append(line + "rn");
-
-                is.close();
-                con.disconnect();
-                return buffer.toString();
-            }
-            catch(Throwable t) {
-                t.printStackTrace();
-            }
-            finally {
-                try { is.close(); } catch(Throwable t) {}
-                try { con.disconnect(); } catch(Throwable t) {}
-            }
-
-            return null;
-
-        }
-
-        public byte[] getImage(String code) {
-            HttpURLConnection con = null ;
-            InputStream is = null;
-            try {
-                con = (HttpURLConnection) ( new URL(IMG_URL + code)).openConnection();
-                con.setRequestMethod("GET");
-                con.setDoInput(true);
-                con.setDoOutput(true);
-                con.connect();
-
-                // Let's read the response
-                is = con.getInputStream();
-                byte[] buffer = new byte[1024];
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-                while ( is.read(buffer) != -1)
-                    baos.write(buffer);
-
-                return baos.toByteArray();
-            }
-            catch(Throwable t) {
-                t.printStackTrace();
-            }
-            finally {
-                try { is.close(); } catch(Throwable t) {}
-                try { con.disconnect(); } catch(Throwable t) {}
-            }
-
-            return null;
-
-        }
-    }
-
 }

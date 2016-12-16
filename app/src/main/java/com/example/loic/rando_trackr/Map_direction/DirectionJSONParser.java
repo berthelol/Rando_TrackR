@@ -1,4 +1,4 @@
-package com.example.loic.rando_trackr;
+package com.example.loic.rando_trackr.Map_direction;
 
 import android.util.Log;
 import android.widget.Toast;

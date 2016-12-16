@@ -15,27 +15,24 @@
             android:icon="@drawable/parcours"
             android:title="Parcours" />
         <item
-            android:id="@+id/physique"
-            android:icon="@drawable/physiques"
-            android:title="Physiques" />
+            android:id="@+id/historique"
+            android:icon="@drawable/historique"
+            android:title="Historique" />
         <item
             android:id="@+id/parametres"
             android:icon="@drawable/parametres"
             android:title="Parametres" />
     </group>
-<!--
-    <item android:title="Communicate">
+
+    <item android:title="Aventurier">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:id="@+id/hardcore_mode"
+                android:icon="@drawable/menu_compass"
+                android:title="Mode Aventure" />
+
         </menu>
     </item>
-    -->
+
 
 </menu>

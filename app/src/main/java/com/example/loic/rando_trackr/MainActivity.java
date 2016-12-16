@@ -1,10 +1,6 @@
 package com.example.loic.rando_trackr;
 
-import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,7 +8,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.app.Fragment;
@@ -21,24 +16,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import static android.R.attr.label;
-import static android.R.color.holo_green_dark;
-import static android.R.color.holo_orange_dark;
-import static java.security.AccessController.getContext;
-
-
 /**
  * Created by Loïc on 18/09/16.
  */
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    MainActivity context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        context =this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
@@ -58,19 +46,41 @@ public class MainActivity extends AppCompatActivity
         ft.replace(R.id.content_frame, fragment);
         ft.commit();
 
+       try
+        {
+            SQLiteDatabase database =this.openOrCreateDatabase("RandoTrackR",MODE_PRIVATE,null);
 
-        //add this line to display menu1 when the activity is loaded
+            database.execSQL("CREATE TABLE IF NOT EXISTS user (firstname VARCHAR, lastname VARCHAR, nburgence VARCHAR)");
+           // database.execSQL("INSERT INTO user (firstname,lastname,nburgence) VALUES ('Loic','Berthelot','0677823818')");
+
+            /*Cursor c =database.rawQuery("SELECT * FROM user",null);
+
+            int firstnameindex = c.getColumnIndex("firstname");
+            int lastnameindex = c.getColumnIndex("lastname");
+            int nburgenceindex = c.getColumnIndex("nburgence");
+
+            c.moveToFirst();
+            while (c!=null)
+            {
+                Log.i("firstname:",c.getString(firstnameindex));
+                Log.i("lastname:",c.getString(lastnameindex));
+                c.moveToNext();
+            }*/
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+              //add this line to display menu1 when the activity is loaded
        // displaySelectedScreen(R.id.profile);
-       // Localisation_Service test = new Localisation_Service();
-        //test.getposition();
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            //super.onBackPressed();
+            super.onBackPressed();
         }
     }
 
@@ -95,29 +105,6 @@ public class MainActivity extends AppCompatActivity
             deleteDatabase("RandoTrackR");
             Toast toast = Toast.makeText(getApplicationContext(), "Db deleted", Toast.LENGTH_LONG);
             toast.show();
-            return true;
-        }
-        if (id == R.id.showdb) {
-            //clearDB
-            SQLiteDatabase randoTrackRDB = openOrCreateDatabase("RandoTrackR",MODE_PRIVATE,null);
-
-            Cursor resultSet;
-            try {
-                //Fetch the data from DB
-                resultSet = randoTrackRDB.rawQuery("Select * from Waypoint",null);
-                while (resultSet.moveToNext()) {
-                    String name = resultSet.getString(resultSet.getColumnIndex("Adresse"));
-                    String type = resultSet.getString(resultSet.getColumnIndex("Type"));
-                    String lat = resultSet.getString(resultSet.getColumnIndex("Latitude"));
-                    String lng = resultSet.getString(resultSet.getColumnIndex("Longitude"));
-                    int waypointnb = resultSet.getInt(resultSet.getColumnIndex("Waypointnb"));
-
-                    Log.i("DB item","Waypoint: "+waypointnb+" Adresse: "+name+" Type: "+type+" Latitude: "+lat+" Longitude: "+lng);
-                }
-                resultSet.close();
-            } catch (SQLiteException e){
-                e.printStackTrace();
-            }
             return true;
         }
 
@@ -149,17 +136,20 @@ public class MainActivity extends AppCompatActivity
             case R.id.parcours:
                 fragment = new Parcours();
                 break;
-            case R.id.physique:
-                fragment = new Physiques();
+            case R.id.historique:
+                fragment = new Historique();
                 break;
             case R.id.parametres:
                 fragment = new Parametres();
+                break;
+            case R.id.hardcore_mode:
+                fragment = new Aventurier();
                 break;
             case 0:
                 fragment = new Profil();
                 break;
             default:
-                fragment = new Accueil();
+                fragment = new Aventurier();
 
         }
 
@@ -179,5 +169,11 @@ public class MainActivity extends AppCompatActivity
         displaySelectedScreen(0);
     }
 
-
+    public void onSave (View view)
+    {
+        Button savebtn = (Button) findViewById(R.id.savebutton);
+        savebtn.setBackgroundResource(R.drawable.mysavebutton);
+        Toast toast = Toast.makeText(getApplicationContext(), "Modifications saved", Toast.LENGTH_SHORT);
+        toast.show();
+    }
 }
