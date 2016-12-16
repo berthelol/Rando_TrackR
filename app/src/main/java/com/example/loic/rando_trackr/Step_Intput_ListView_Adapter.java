@@ -62,7 +62,7 @@ public class Step_Intput_ListView_Adapter extends BaseAdapter {
                 Double lat = resultSet.getDouble(resultSet.getColumnIndex("Latitude"));
                 Double lng = resultSet.getDouble(resultSet.getColumnIndex("Longitude"));
                 int waypointnb = resultSet.getInt(resultSet.getColumnIndex("Waypointnb"));
-                Waypoint waypoint = new Waypoint(waypointnb,adresse,type,lat,lng);
+                Waypoint waypoint = new Waypoint(waypointnb,adresse,type,lat,lng,"",0,"",0);
                 myItems.add(waypoint);
             }
             resultSet.close();
@@ -89,7 +89,7 @@ public class Step_Intput_ListView_Adapter extends BaseAdapter {
                 Double lat = resultSet.getDouble(resultSet.getColumnIndex("Latitude"));
                 Double lng = resultSet.getDouble(resultSet.getColumnIndex("Longitude"));
                 int waypointnb = resultSet.getInt(resultSet.getColumnIndex("Waypointnb"));
-                Waypoint waypoint = new Waypoint(waypointnb,adresse,type,lat,lng);
+                Waypoint waypoint = new Waypoint(waypointnb,adresse,type,lat,lng,"",0,"",0);
                 myItems.add(waypoint);
             }
             resultSet.close();
@@ -101,8 +101,8 @@ public class Step_Intput_ListView_Adapter extends BaseAdapter {
 
     public void additem()
     {
-        Waypoint listItem = new Waypoint((getCount()+1),"","ADRESSE",new Double(-1),new Double(-1));
-        this.randoTrackRDB.execSQL("INSERT INTO Waypoint VALUES("+(getCount()+1)+",'','ADRESSE',-1,-1);");
+        Waypoint listItem = new Waypoint((getCount()+1),"","ADRESSE",new Double(-1),new Double(-1),"",0,"",0);
+        this.randoTrackRDB.execSQL("INSERT INTO Waypoint VALUES("+(getCount()+1)+",'','ADRESSE',-1,-1,'',0,'',0);");
        // myItems.add(listItem);
         refresh();
     }
@@ -223,6 +223,8 @@ public class Step_Intput_ListView_Adapter extends BaseAdapter {
                     try {
                         //fetching the response
                         JSONObject jsonresponse =geocoder.get();
+                        if(jsonresponse==null)
+                            Toast.makeText(context,"Echec, adresse non trouvé",Toast.LENGTH_LONG).show();
                         formatted_address = jsonresponse.getString("formatted_address");
                         geocoded_adress = new LatLng(jsonresponse.getDouble("lat"),jsonresponse.getDouble("lng"));
                     } catch (InterruptedException e) {
@@ -230,6 +232,10 @@ public class Step_Intput_ListView_Adapter extends BaseAdapter {
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     }catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    catch (NullPointerException e)
+                    {
                         e.printStackTrace();
                     }
                     if(geocoded_adress!=null)

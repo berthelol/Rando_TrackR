@@ -49,8 +49,6 @@ public class Profil extends Fragment {
         //returning our layout file
         return inflater.inflate(R.layout.fragment_profil, container, false);
     }
-
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -74,33 +72,6 @@ public class Profil extends Fragment {
         urgency_number.setText(sharedPreferences.getString("phonenumber",""));
         sms_check.setChecked(sharedPreferences.getBoolean("sms_checked",false));
         call_check.setChecked(sharedPreferences.getBoolean("call_checked",false));
-
-        /*try {
-            SQLiteDatabase database = getContext().openOrCreateDatabase("RandoTrackR", Context.MODE_PRIVATE,null);
-
-
-            Cursor c =database.rawQuery("INSERT INTO User (CustomerName, ContactName, Address, City, PostalCode, Country)\n" +
-                    "VALUES ('Cardinal','Tom B. Erichsen','Skagen 21','Stavanger','4006','Norway');",null);
-
-            int firstnameindex = c.getColumnIndex("firstname");
-            int lastnameindex = c.getColumnIndex("lastname");
-            int nburgenceindex = c.getColumnIndex("nburgence");
-
-            c.moveToFirst();
-            while (c!=null)
-            {
-                firstname.setText(c.getString(firstnameindex));
-                Log.i("in profile firstname:",c.getString(firstnameindex));
-                lastname.setText(c.getString(lastnameindex));
-                Log.i("in profile lastname:",c.getString(lastnameindex));
-                urgency_number.setText(c.getString(nburgenceindex));
-                Log.i("in profile nb urgence:",c.getString(nburgenceindex));
-                c.moveToNext();
-            }
-        }catch (Exception e)
-        {
-            e.printStackTrace();
-        }*/
 
         //add all listenners to theses objects
         firstname.addTextChangedListener(new TextWatcher() {
@@ -179,16 +150,6 @@ public class Profil extends Fragment {
                     sharedPreferences.edit().putBoolean("sms_checked",sms_check.isChecked()).apply();
                     sharedPreferences.edit().putBoolean("call_checked",call_check.isChecked()).apply();
                     data_change=false;
-            /*try {
-                SQLiteDatabase database = getContext().openOrCreateDatabase("RandoTrackR", Context.MODE_PRIVATE,null);
-                Cursor c =database.rawQuery("INSERT INTO RandoTrackR (firstname, lastname, nburgence)\n" +
-                        "VALUES ("+firstname.getText()+","+lastname.getText()+","+urgency_number.getText()+");",null);
-
-            }catch (Exception e)
-            {
-                e.printStackTrace();
-            }*/
-
                 }
                 Toast toast = Toast.makeText(getContext(), "Modifications saved", Toast.LENGTH_SHORT);
                 toast.show();

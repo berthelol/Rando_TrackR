@@ -12,8 +12,6 @@ public enum Quick_info {
     Temps_prochaine_etape("Temps prochaine étape",3),
     Vitesse("Vitesse",4),
     Temps_restant("Temps restant",5),
-    Temperature_actuel("Temperature actuel",6),
-    Temperature_destination("Temperature destination",7),
     Kcal_depensees("Kcal dépensées",8),
     Distance_restante("Distance restante",9),
     Distance_parcouru("Distance parcouru",10),
@@ -25,7 +23,7 @@ public enum Quick_info {
     //index in the spinner
     private int index;
     //constructor
-    private Quick_info(String label, int index){
+    Quick_info(String label, int index){
         this.label = label;
         this.index =index;
     }

@@ -18,6 +18,7 @@ public class Connection_Handler extends AsyncTask<String, Void, String> {
     // Downloading data in non-ui thread
     @Override
     protected String doInBackground(String... inputs) {
+        Log.i("Connection Handler URL",inputs[0]);
         String result="";
         URL url  = null;
         HttpURLConnection urlconnection =null;
