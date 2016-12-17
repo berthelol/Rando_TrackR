@@ -255,8 +255,6 @@ public class Map extends Fragment {
         public void onMyLocationChange(Location location) {
             LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
 
-            //waiting++;
-
             if(!position_ready&&googleMap != null)
             {
                 //set the first position
