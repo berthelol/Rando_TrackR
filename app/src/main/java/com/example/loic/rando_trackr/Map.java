@@ -65,6 +65,8 @@ public class Map extends Fragment {
 
     //Database randotrackR
     SQLiteDatabase randoTrackRDB;
+    //Sharedpreferences object (Database)
+    SharedPreferences sharedPreferences ;
 
     //List of waypoints
     ArrayList <Waypoint> waypoints;
@@ -80,9 +82,6 @@ public class Map extends Fragment {
     TextView textview_option2;
     TextView textview_option3;
     TextView textview_option4;
-
-    //Sharedpreferences object (Database)
-    SharedPreferences sharedPreferences ;
 
     //Stored last position
     LatLng lastlocation =null;
@@ -254,7 +253,8 @@ public class Map extends Fragment {
         @Override
         public void onMyLocationChange(Location location) {
             LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-
+            sharedPreferences.edit().putFloat("last_latitude",(float)loc.latitude).commit();
+            sharedPreferences.edit().putFloat("last_longitude",(float)loc.longitude).commit();
             if(!position_ready&&googleMap != null)
             {
                 //set the first position

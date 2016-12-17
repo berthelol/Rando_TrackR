@@ -1,5 +1,6 @@
 package com.example.loic.rando_trackr;
 
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -66,12 +67,15 @@ public class Meteo extends Fragment {
     private Weather weatherh1, weatherh2, weatherh3, weatherh4, weatherj1, weatherj2, weatherj3, weatherj1A, weatherj2A, weatherj3A;
     private LinearLayout layoutA, layoutIF;
 
+    //Sharedpreferences object (Database)
+    SharedPreferences sharedPreferences ;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //returning our layout file
-        //change R.layout.yourlayoutfilename for each of your fragments
+        //create the sharedpreferences object to get the user's data
+        sharedPreferences = getContext().getSharedPreferences("com.example.loic.rando_trackr", MODE_PRIVATE);
         return inflater.inflate(R.layout.fragment_meteo, container, false);
     }
 
@@ -88,11 +92,12 @@ public class Meteo extends Fragment {
         Log.i("Arrival lat and lng","lat: "+latA+" lng: "+lonA);
         ///////////        LOIC        --------------------------------->
         // Then we get the current position and arrival position from the app
-
-        latD = Float.parseFloat(""+48.85);
-        lonD = Float.parseFloat(""+2.35);
-
-
+        LatLng local_point=get_local_position();
+       // latD = Float.parseFloat(""+48.85);
+       // lonD = Float.parseFloat(""+2.35);
+        latD = (float)local_point.latitude;
+        lonD = (float)local_point.longitude;
+        Log.i("Local lat and lng","lat: "+latD+" lng: "+lonD);
         // TextView where we print the temperatures
         // with ...h for nexts hours
         txt_temp_h1 = (TextView) getView().findViewById(R.id.txt_temp_h1);
@@ -198,6 +203,11 @@ public class Meteo extends Fragment {
             return new LatLng(lat,lng);
         }
         return null;
+    }
+
+    private LatLng get_local_position()
+    {
+        return new LatLng(sharedPreferences.getFloat("last_latitude",48.85f),sharedPreferences.getFloat("last_longitude",2.35f));
     }
 
     // http://www.survivingwithandroid.com/2013/05/build-weather-app-json-http-android.html
@@ -422,10 +432,6 @@ public class Meteo extends Fragment {
                 txt_j3.setText(weatherj3.getDate().substring(5, 10));
                 txt_temp_j3.setText(""+(df.format(weatherj3.getTemp()))+" °C");
             }
-
-            Log.i("Meteo info J1", df.format(weatherj1.getTemp()));
-            Log.i("Meteo info J2", df.format(weatherj2.getTemp()));
-            Log.i("Meteo info J3", df.format(weatherj3.getTemp()));
 
             txt_city.setText(weatherh1.getCity());
         } catch (InterruptedException e) {
@@ -820,11 +826,11 @@ public class Meteo extends Fragment {
             int close = 0;
             JSONObject childFromListObj, mainObj;
             JSONArray listObj = jObj.optJSONArray("list");
-            //for(int i = 0; i<listObj.length(); i++)
-            while(close != 8)
+            for(int i = 0; i<listObj.length(); i++)
+            //while(close != 8)
             {
                 // Go through the list until we find the date we want
-                childFromListObj = listObj.getJSONObject(n);
+                childFromListObj = listObj.getJSONObject(i);
                 date = childFromListObj.getString("dt_txt");
 
                 Log.i("Date extraite", date);
@@ -957,11 +963,11 @@ public class Meteo extends Fragment {
             int close = 0;
             JSONObject childFromListObj, mainObj;
             JSONArray listObj = jObj.optJSONArray("list");
-            //for(int i = 0; i<listObj.length(); i++)
-            while(close != 8)
+            for(int i = 0; i<listObj.length(); i++)
+            //while(close != 8)
             {
                 // Go through the list until we find the date we want
-                childFromListObj = listObj.getJSONObject(n);
+                childFromListObj = listObj.getJSONObject(i);
                 date = childFromListObj.getString("dt_txt");
 
                 Log.i("Date extraite", date);

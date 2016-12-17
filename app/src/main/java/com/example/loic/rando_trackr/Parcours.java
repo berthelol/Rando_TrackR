@@ -2,6 +2,7 @@ package com.example.loic.rando_trackr;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -69,6 +70,9 @@ public class Parcours extends Fragment implements LocationListener {
     String total_duration="";
     String total_distance="";
 
+    //Sharedpreferences object (Database)
+    SharedPreferences sharedPreferences ;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -82,6 +86,10 @@ public class Parcours extends Fragment implements LocationListener {
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles
         getActivity().setTitle("Parcours");
+
+        //create the sharedpreferences object to get the user's data
+        sharedPreferences = getContext().getSharedPreferences("com.example.loic.rando_trackr", MODE_PRIVATE);
+
         //Formatter
         decimalFormat= new DecimalFormat("###.#####");
         //Get total distance
@@ -151,6 +159,10 @@ public class Parcours extends Fragment implements LocationListener {
     }
     public void fill_view(Location location)
     {
+
+        sharedPreferences.edit().putFloat("last_latitude",(float)location.getLatitude()).commit();
+        sharedPreferences.edit().putFloat("last_longitude",(float)location.getLongitude()).commit();
+
         //Toast.makeText(getContext(),"update view",Toast.LENGTH_SHORT).show();
         longitude_display =(TextView) getView().findViewById(R.id.longitude_display);
         latitude_display =(TextView) getView().findViewById(R.id.latitude_display);
