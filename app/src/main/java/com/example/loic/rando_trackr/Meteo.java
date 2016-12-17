@@ -381,10 +381,6 @@ public class Meteo extends Fragment {
                 txt_temp_j3.setText(""+(df.format(weatherj3.getTemp()))+" °C");
             }
 
-            Log.i("Meteo info J1", df.format(weatherj1.getTemp()));
-            Log.i("Meteo info J2", df.format(weatherj2.getTemp()));
-            Log.i("Meteo info J3", df.format(weatherj3.getTemp()));
-
             txt_city.setText(weatherh1.getCity());
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -779,7 +775,7 @@ public class Meteo extends Fragment {
             JSONObject childFromListObj, mainObj;
             JSONArray listObj = jObj.optJSONArray("list");
             //for(int i = 0; i<listObj.length(); i++)
-            while(close != 8)
+            while(close != 7)
             {
                 // Go through the list until we find the date we want
                 childFromListObj = listObj.getJSONObject(n);
