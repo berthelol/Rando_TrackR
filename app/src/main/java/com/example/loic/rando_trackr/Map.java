@@ -55,7 +55,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static android.R.attr.data;
+import static android.R.attr.duration;
 import static android.content.Context.MODE_PRIVATE;
+import static com.example.loic.rando_trackr.R.drawable.location;
+import static com.google.android.gms.fitness.data.zzr.St;
 
 
 /**
@@ -93,6 +97,8 @@ public class Map extends Fragment {
 
     //Boolean to signal when position is created
     Boolean position_ready;
+
+    DecimalFormat df1 = new DecimalFormat("#.#####");
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -201,29 +207,129 @@ public class Map extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        refresh_quick_info();
 
-        //get the options textview's
-        this.textview_option1 = (TextView) getView().findViewById(R.id.option_1);
-        this.textview_option2 = (TextView) getView().findViewById(R.id.option_2);
-        this.textview_option3 = (TextView) getView().findViewById(R.id.option_3);
-        this.textview_option4 = (TextView) getView().findViewById(R.id.option_4);
-
-        //create the sharedpreferences object to get the user's data
-        sharedPreferences = getContext().getSharedPreferences("com.example.loic.rando_trackr", MODE_PRIVATE);
-
-        //get the enum the user parametered
-        Quick_info quick_info1 =  Quick_info.valueOf(sharedPreferences.getString("option1","Not_defined"));
-        Quick_info quick_info2 =  Quick_info.valueOf(sharedPreferences.getString("option2","Not_defined"));
-        Quick_info quick_info3 =  Quick_info.valueOf(sharedPreferences.getString("option3","Not_defined"));
-        Quick_info quick_info4 =  Quick_info.valueOf(sharedPreferences.getString("option4","Not_defined"));
-
-        //Set the content of the enum
-        this.textview_option1.setText(quick_info1==Quick_info.Not_defined?"":quick_info1.toString());
-        this.textview_option2.setText(quick_info2.toString());
-        this.textview_option3.setText(quick_info3.toString());
-        this.textview_option4.setText(quick_info4.toString());
 
     }
+   public void refresh_quick_info()
+   {
+
+       //get the options textview's
+       this.textview_option1 = (TextView) getView().findViewById(R.id.option_1);
+       this.textview_option2 = (TextView) getView().findViewById(R.id.option_2);
+       this.textview_option3 = (TextView) getView().findViewById(R.id.option_3);
+       this.textview_option4 = (TextView) getView().findViewById(R.id.option_4);
+
+       //create the sharedpreferences object to get the user's data
+       sharedPreferences = getContext().getSharedPreferences("com.example.loic.rando_trackr", MODE_PRIVATE);
+
+       //get the enum the user parametered
+       Quick_info quick_info1 =  Quick_info.valueOf(sharedPreferences.getString("option1","Not_defined"));
+       Quick_info quick_info2 =  Quick_info.valueOf(sharedPreferences.getString("option2","Not_defined"));
+       Quick_info quick_info3 =  Quick_info.valueOf(sharedPreferences.getString("option3","Not_defined"));
+       Quick_info quick_info4 =  Quick_info.valueOf(sharedPreferences.getString("option4","Not_defined"));
+
+
+       //Set the content of the enum
+       this.textview_option1.setText(get_data_from_quick_info(quick_info1));
+       this.textview_option2.setText(get_data_from_quick_info(quick_info2));
+       this.textview_option3.setText(get_data_from_quick_info(quick_info3));
+       this.textview_option4.setText(get_data_from_quick_info(quick_info4));
+   }
+    private String get_data_from_quick_info(Quick_info quick_info) {
+        String data_to_return="";
+        String _distance_prochaine_etape="";
+        String _temps_prochaine_etape="";
+        int _distance_restante=0;
+        int _temps_restant=0;
+        int distance_parcouru_aujourdhui=0;
+        this.randoTrackRDB = getContext().openOrCreateDatabase("RandoTrackR",MODE_PRIVATE,null);
+        Cursor resultSet;
+        try {
+            //Fetch the data from DB
+            resultSet = randoTrackRDB.rawQuery("Select * from Waypoint",null);
+            int i=0;
+            while (resultSet.moveToNext()) {
+                if(i==0)
+                {
+                    _distance_prochaine_etape= resultSet.getString(resultSet.getColumnIndex("Distance_text"));
+                    _temps_prochaine_etape=resultSet.getString(resultSet.getColumnIndex("Distance_text"));
+                    int duration = resultSet.getInt(resultSet.getColumnIndex("Duration_value"));
+                    _temps_restant+=duration;
+                    int distance = resultSet.getInt(resultSet.getColumnIndex("Distance_value"));
+                    _distance_restante+=distance;
+                }else
+                {
+                    int duration = resultSet.getInt(resultSet.getColumnIndex("Duration_value"));
+                    _temps_restant+=duration;
+                    int distance = resultSet.getInt(resultSet.getColumnIndex("Distance_value"));
+                    _distance_restante+=distance;
+                }
+
+            }
+            resultSet.close();
+
+            try {
+                //Fetch the data from DB
+                resultSet = randoTrackRDB.rawQuery("Select Distance from Historical_distance_travelled",null);
+                //Get only the last item
+                resultSet.moveToLast();
+                if(resultSet!=null)
+                {
+
+                    distance_parcouru_aujourdhui = resultSet.getInt(resultSet.getColumnIndex("Distance"));
+
+                }
+                resultSet.close();
+            } catch (SQLiteException e){
+                e.printStackTrace();
+            }
+        } catch (SQLiteException e){
+            e.printStackTrace();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+            switch (quick_info)
+            {
+                case Position:
+                    if(position_ready)
+                    data_to_return="lat:"+df1.format(lastlocation.latitude)+"\nlng:"+df1.format(lastlocation.longitude);
+                    break;
+                case Temps_restant:
+                    if(_temps_restant!=0)
+                    data_to_return="Durée total\n"+_temps_restant/60+"min";
+                    break;
+                case Distance_restante:
+                    if(_distance_restante!=0)
+                    data_to_return="Distance total\n"+_distance_restante/1000+"km";
+                    break;
+                case Distance_parcouru:
+                    data_to_return="Distance parcouru\n"+distance_parcouru_aujourdhui/1000+"km";
+                    break;
+                case Distance_prochaine_etape:
+                    if(_distance_prochaine_etape!="")
+                    data_to_return="Pro étape\n"+_distance_prochaine_etape;
+                    break;
+                case Temps_prochaine_etape:
+                    if(_temps_prochaine_etape!="")
+                    data_to_return="Pro étape\n"+_temps_prochaine_etape;
+                    break;
+                case Altitude:
+                    data_to_return="Altitude\n"+sharedPreferences.getFloat("last_altitude",0f);
+                    break;
+                case Vitesse:
+                    data_to_return="Vitesse\n"+sharedPreferences.getFloat("last_vitesse",0f);
+                    break;
+                default :
+                    data_to_return="";
+            }
+
+
+        return data_to_return;
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -255,6 +361,8 @@ public class Map extends Fragment {
             LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
             sharedPreferences.edit().putFloat("last_latitude",(float)loc.latitude).commit();
             sharedPreferences.edit().putFloat("last_longitude",(float)loc.longitude).commit();
+            sharedPreferences.edit().putFloat("last_vitesse",location.getSpeed()).commit();
+            sharedPreferences.edit().putFloat("last_altitude",(float)location.getAltitude()).commit();
             if(!position_ready&&googleMap != null)
             {
                 //set the first position
@@ -286,7 +394,7 @@ public class Map extends Fragment {
                             .strokeColor(Color.BLUE)
                             .fillColor(Color.BLUE));
                 }
-
+                refresh_quick_info();
             }
         }
     };
@@ -329,7 +437,7 @@ public class Map extends Fragment {
 
     public void test_if_position_is_at_waypoint(LatLng pos)
     {
-        DecimalFormat df1 = new DecimalFormat("#.#####");
+        //NOT WORKING BECAUSE OF PRECISION PROBLEMS
         Log.i("Point user","lng: "+df1.format(pos.longitude) + "  lat: "+df1.format(pos.latitude));
         //We check every way point (expect the first one which is our position)
         //We could've check only the next one but we assume the user can use a shortcut

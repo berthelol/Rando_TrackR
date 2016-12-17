@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.loic.rando_trackr.Historique_data.DayAxisValueFormatter;
 import com.example.loic.rando_trackr.R;
@@ -49,6 +50,8 @@ public class Historique extends Fragment {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd");
     //Bar chart
     protected BarChart barChart;
+    //Total text view
+    private TextView total_distance;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -65,6 +68,8 @@ public class Historique extends Fragment {
 
         //Initialse database
         this.randoTrackRDB = getContext().openOrCreateDatabase("RandoTrackR",MODE_PRIVATE,null);
+
+        total_distance= (TextView)getView().findViewById(R.id.total);
         //fetch data from db
         getdatafromDB();
 
@@ -76,6 +81,7 @@ public class Historique extends Fragment {
         barChart.setMaxVisibleValueCount(60);
         // scaling can now only be done on x- and y-axis separately
         barChart.setPinchZoom(false);
+        barChart.getAxisRight().setEnabled(false);
 
         barChart.setDrawGridBackground(false);
         // mChart.setDrawYLabels(false);
@@ -139,6 +145,8 @@ public class Historique extends Fragment {
     }
     public void getdatafromDB()
     {
+
+        int total_dist=0;
         long last_date=0;
         ArrayList<DB_Object> datafromdb = new ArrayList<>();
         Cursor resultSet;
@@ -170,6 +178,7 @@ public class Historique extends Fragment {
                 }
                 int distance = resultSet.getInt(resultSet.getColumnIndex("Distance"));
                 datafromdb.add(new DB_Object(date_unix,distance));
+                total_dist+=distance;
                 i++;
             }
 
@@ -194,5 +203,7 @@ public class Historique extends Fragment {
             stop++;
             date+=86400;
         }
+
+        total_distance.setText("Total: "+(total_dist/1000)+" km");
     }
 }

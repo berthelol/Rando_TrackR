@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -11,16 +12,16 @@
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/graph_1"
             android:layout_width="match_parent"
-            android:layout_height="163dp" />
+            android:layout_height="580dp"
+            android:layout_weight="0.90" />
 
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/graph_2"
+        <TextView
+            android:text="Total Km"
             android:layout_width="match_parent"
-            android:layout_height="164dp"/>
+            android:layout_height="wrap_content"
+            android:id="@+id/total"
+            android:textAlignment="center" />
 
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/graph_3"
-            android:layout_width="match_parent"
-            android:layout_height="169dp"/>
     </LinearLayout>
+
 </RelativeLayout>

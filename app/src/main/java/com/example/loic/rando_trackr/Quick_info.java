@@ -8,15 +8,14 @@ public enum Quick_info {
 
     Position("Position",0),
     Altitude("Altitude",1),
-    Tempstotal("Temps total",2),
-    Temps_prochaine_etape("Temps prochaine étape",3),
-    Vitesse("Vitesse",4),
-    Temps_restant("Temps restant",5),
-    Kcal_depensees("Kcal dépensées",8),
-    Distance_restante("Distance restante",9),
-    Distance_parcouru("Distance parcouru",10),
-    Distance_prochaine_etape("Distance prochaine étape",11),
-    Not_defined("Not Defined",12);
+    Temps_prochaine_etape("Temps prochaine étape",2),
+    Vitesse("Vitesse",3),
+    Temps_restant("Temps restant",4),
+    Kcal_depensees("Kcal dépensées",5),
+    Distance_restante("Distance restante",6),
+    Distance_parcouru("Distance parcouru",7),
+    Distance_prochaine_etape("Distance prochaine étape",8),
+    Not_defined("Not Defined",9);
 
     //the name that will be displayed in the spinner and in the home view
     private String label;
