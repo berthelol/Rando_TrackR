@@ -1,5 +1,9 @@
 package com.example.loic.rando_trackr.MeteoObject;
 
+import android.util.Log;
+
+import java.text.DecimalFormat;
+
 /**
  * Created by mathieuchebassier on 08/12/2016.
  */
@@ -12,8 +16,9 @@ public class Weather {
     private String descr;
     private String condition;
     private String icon;
-    private double temp;
+    private float temp;
     private int clouds;
+    private String jour, heure;
 
     public Weather()
     {
@@ -97,14 +102,20 @@ public class Weather {
         this.descr = d;
     }
 
-    public double getTemp()
+    public float getTemp()
     {
         return this.temp;
     }
 
-    public void setTemp(double t)
+    public void setTemp(float t)
     {
-        this.temp = t;
+     /*   DecimalFormat tempFormat = new DecimalFormat("###,#");
+        this.temp = Float.valueOf(tempFormat.format(t));
+
+*/
+        double diff = 273.15;
+        float d = Float.parseFloat(Double.toString(diff));
+        this.temp = t-d; // to convert from kelvin to ceilcus
     }
 
 }

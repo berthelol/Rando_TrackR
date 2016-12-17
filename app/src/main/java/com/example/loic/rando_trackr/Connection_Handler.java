@@ -22,6 +22,9 @@ public class Connection_Handler extends AsyncTask<String, Void, String> {
         String result="";
         URL url  = null;
         HttpURLConnection urlconnection =null;
+
+        Log.i("URL Reiceved", inputs[0]);
+
         try {
             url = new URL(inputs[0]);
             urlconnection =(HttpURLConnection) url.openConnection();
