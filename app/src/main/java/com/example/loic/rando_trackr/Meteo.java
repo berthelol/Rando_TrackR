@@ -75,7 +75,6 @@ public class Meteo extends Fragment {
         //you can set the title for your toolbar here for different fragments different titles
         getActivity().setTitle("Meteo");
 
-
         // We initialize to 0 each value to know that there is no arrival point
         latA = 0;
         lonA = 0;
@@ -84,7 +83,6 @@ public class Meteo extends Fragment {
         // Then we get the current position and arrival position from the app
         latD = Float.parseFloat(""+48.85);
         lonD = Float.parseFloat(""+2.35);
-        // + datas d'arrivée ;)
 
 
         // TextView where we print the temperatures

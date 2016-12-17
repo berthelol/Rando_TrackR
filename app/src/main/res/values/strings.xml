@@ -21,5 +21,6 @@
     <string name="API_KEY">AIzaSyAXGZr8iYmXV499nX-tnuqPuSV_TBefAQA</string>
     <string name="facebook_app_id">1717664865228169</string>
     <string name="weather_API_KEY">9b733320ec0639446758235978d2bdab</string>
+    <string name="weather_icon_url">http://openweathermap.org/img/w/</string>
 
 </resources>
