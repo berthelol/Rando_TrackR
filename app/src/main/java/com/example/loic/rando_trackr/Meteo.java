@@ -1,5 +1,8 @@
 package com.example.loic.rando_trackr;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.loic.rando_trackr.MeteoObject.ImageConnection_Handler;
 import com.example.loic.rando_trackr.MeteoObject.Weather;
 
 import org.json.JSONArray;
@@ -24,6 +28,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 
@@ -38,12 +43,14 @@ public class Meteo extends Fragment {
 
     private EditText cityName;
     private TextView txt_temp_h1, txt_temp_h2, txt_temp_h3, txt_temp_h4,
-                    txt_temp_j1, txt_temp_j2, txt_temp_j3, txt_temp_j4, txt_city;
+                    txt_temp_j1, txt_temp_j2, txt_temp_j3, txt_city,
+                    txt_h1, txt_h2, txt_h3, txt_h4, txt_j1, txt_j2, txt_j3;
+
     private ImageView img_h1, img_h2, img_h3, img_h4,
-                    img_j1, img_j2, img_j3, img_j4;
+                    img_j1, img_j2, img_j3;
     private ImageButton btn;
 
-    private Weather weatherh1, weatherh2, weatherh3, weatherh4, weatherj1, weatherj2, weatherj3, weatherj4;
+    private Weather weatherh1, weatherh2, weatherh3, weatherh4, weatherj1, weatherj2, weatherj3;
 
     @Nullable
     @Override
@@ -70,7 +77,15 @@ public class Meteo extends Fragment {
         txt_temp_j1 = (TextView) getView().findViewById(R.id.txt_temp_j1);
         txt_temp_j2 = (TextView) getView().findViewById(R.id.txt_temp_j2);
         txt_temp_j3 = (TextView) getView().findViewById(R.id.txt_temp_j3);
-        txt_temp_j4 = (TextView) getView().findViewById(R.id.txt_temp_j4);
+
+        txt_h1 = (TextView) getView().findViewById(R.id.txt_h1);
+        txt_h2 = (TextView) getView().findViewById(R.id.txt_h2);
+        txt_h3 = (TextView) getView().findViewById(R.id.txt_h3);
+        txt_h4 = (TextView) getView().findViewById(R.id.txt_h4);
+
+        txt_j1 = (TextView) getView().findViewById(R.id.txt_j1);
+        txt_j2 = (TextView) getView().findViewById(R.id.txt_j2);
+        txt_j3 = (TextView) getView().findViewById(R.id.txt_j3);
 
         txt_city = (TextView) getView().findViewById(R.id.txt_city);
 
@@ -84,17 +99,6 @@ public class Meteo extends Fragment {
         img_j1 = (ImageView) getView().findViewById(R.id.image_j1);
         img_j2 = (ImageView) getView().findViewById(R.id.image_j2);
         img_j3 = (ImageView) getView().findViewById(R.id.image_j3);
-        img_j4 = (ImageView) getView().findViewById(R.id.image_j4);
-
-        // Image button to synchronize
-        btn = (ImageButton) getView().findViewById(R.id.btn_sync);
-
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                weatherUpdate();
-            }
-        });
 
         // We initialize meteo datas
         weatherUpdate();
@@ -122,15 +126,18 @@ public class Meteo extends Fragment {
         return jObj.getInt(tagName);
     }
 
-    private String getDate(String s)
-    {
+    private String getDate(String s){
         Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH);
+        int month = c.get(Calendar.MONTH)+1;
         int day = c.get((Calendar.DAY_OF_MONTH));
-        int h = c.get((Calendar.HOUR));
-        int hCall, hCallh2, hCallh3, hCallh4, hCallj1, hCallj2, hCallj3, hCallj4;
-        int dCallh1, dCallh2, dCallh3, dCallh4, dCallj1, dCallj2, dCallj3, dCallj4;
+        int h = c.get((Calendar.HOUR_OF_DAY));
+        int hCall, hCallh2, hCallh3, hCallh4, hCallj1, hCallj2, hCallj3;
+        int dCallh1, dCallh2, dCallh3, dCallh4, dCallj1, dCallj2, dCallj3;
+
+        Log.i("Date --> ", year+" "+month+" "+day+" "+h);
+
+        DecimalFormat formatH = new DecimalFormat("00");
 
         // Check the current time to ask for the next meteo
         // The meteo is updated every 3 hours, so we compare to be able to set a good String to
@@ -215,16 +222,12 @@ public class Meteo extends Fragment {
         {
             hCall += 72;
         }
-        if (s.equals("j4"))
-        {
-            hCall += 96;
-        }
 
 
         while (hCall >= 24) {
             // if next hour is 24, we need to change the date and check for the end of month and year
             // we exclude bisexctile years
-            if (hCall > 24) {
+            if (hCall >= 24) {
                 day++;
                 hCall -= 24;
 
@@ -256,12 +259,12 @@ public class Meteo extends Fragment {
 
         // Now we are ready to create the string
         // Example from response : "2016-12-15 15:00:00"
-        return year+"-"+month+"-"+day+" "+hCall+":00:00";
+        return year+"-"+month+"-"+day+" "+formatH.format(hCall)+":00:00";
 
 
     }
-    private void weatherUpdate()
-    {
+
+    private void weatherUpdate(){
         //Weather web site API
         final String BASE_URL = "http://api.openweathermap.org/data/2.5/forecast/?";
         //Weather web site API KEY
@@ -269,25 +272,40 @@ public class Meteo extends Fragment {
         // Get the new weather
         Connection_Handler ask_for_weather = new Connection_Handler();
         //Execute the request
-        ask_for_weather.execute(BASE_URL+"lat=35&lon=139"+"&APPID="+API_KEY);
+        ask_for_weather.execute(BASE_URL+"lat=48.85&lon=2.35"+"&APPID="+API_KEY);
+
 
         String response= null;
         try {
             //Wait for the data to be uploaded (asynchrone)
             response = ask_for_weather.get();
+
             Log.i("Weather Content",response);
             //Extract weather using the response of the API
+            // Initializing all the weathers objects
             extractWeatherFromResponse(new JSONObject(response));
 
             //Update the view
-            txt_temp_h1.setText(Double.toString(weatherh1.getTemp()));
-            txt_temp_h2.setText(Double.toString(weatherh2.getTemp()));
-            txt_temp_h3.setText(Double.toString(weatherh3.getTemp()));
-            txt_temp_h4.setText(Double.toString(weatherh4.getTemp()));
-            txt_temp_j1.setText(Double.toString(weatherj1.getTemp()));
-            txt_temp_j2.setText(Double.toString(weatherj2.getTemp()));
-            txt_temp_j3.setText(Double.toString(weatherj3.getTemp()));
-            txt_temp_j4.setText(Double.toString(weatherj4.getTemp()));
+            // Dates sous la forme : 2016-12-18 06:00:00
+            // Extract hour from the date string
+            if(weatherh1 != null) txt_h1.setText(weatherh1.getDate().substring(11, 16));
+            if(weatherh2 != null) txt_h2.setText(weatherh2.getDate().substring(11, 16));
+            if(weatherh3 != null) txt_h3.setText(weatherh3.getDate().substring(11, 16));
+            if(weatherh4 != null) txt_h4.setText(weatherh4.getDate().substring(11, 16));
+            // Extract day from the date string
+            if(weatherj1 != null) txt_j1.setText(weatherj1.getDate().substring(5, 10));
+            if(weatherj2 != null) txt_j2.setText(weatherj2.getDate().substring(5, 10));
+            if(weatherj3 != null) txt_j3.setText(weatherj3.getDate().substring(5, 10));
+
+            // Temperatures
+            DecimalFormat df = new DecimalFormat("###.#");
+            if(weatherh1 != null) txt_temp_h1.setText(""+(df.format(weatherh1.getTemp()))+" °C");
+            if(weatherh2 != null) txt_temp_h2.setText(""+(df.format(weatherh2.getTemp()))+" °C");
+            if(weatherh3 != null) txt_temp_h3.setText(""+(df.format(weatherh3.getTemp()))+" °C");
+            if(weatherh4 != null) txt_temp_h4.setText(""+(df.format(weatherh4.getTemp()))+" °C");
+            if(weatherj1 != null) txt_temp_j1.setText(""+(df.format(weatherj1.getTemp()))+" °C");
+            if(weatherj2 != null) txt_temp_j2.setText(""+(df.format(weatherj2.getTemp()))+" °C");
+            if(weatherj3 != null) txt_temp_j3.setText(""+(df.format(weatherj3.getTemp()))+" °C");
 
             txt_city.setText(weatherh1.getCity());
         } catch (InterruptedException e) {
@@ -297,134 +315,226 @@ public class Meteo extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        getImages();
     }
 
-    /*public class WeatherHttpClient { //http://api.openweathermap.org/data/2.5/forecast/?lat=35&lon=139&APPID=9b733320ec0639446758235978d2bdab
+    public byte[] imageDownload(String s)
+    {
+        String result = "";
+        URL url = null;
+        InputStream in = null;
+        HttpURLConnection urlconnection = null;
+        ByteArrayOutputStream baos = null;
 
-        private String BASE_URL = "http://api.openweathermap.org/data/2.5/forecast/?";
-        private String IMG_URL = "http://openweathermap.org/img/w/";
-        private String APPID = "&APPID=9b733320ec0639446758235978d2bdab"; // id to be allowed to get the meteo data from OpenWeatherMap
+        Log.i("URL Reiceved", s);
 
-        public String getWeatherData(String location) {
-            HttpURLConnection con = null ;
-            InputStream is = null;
+        try {
+            url = new URL(s);
+            urlconnection = (HttpURLConnection) url.openConnection();
+            in = urlconnection.getInputStream();
+            byte[] buffer = new byte[1024];
+            baos = new ByteArrayOutputStream();
 
-            try {
-                URL url = new URL(BASE_URL + location + APPID);
-                //con.setRequestMethod("GET");
-               // con.setDoInput(true);
-               // con.setDoOutput(true);
-                con = (HttpURLConnection) url.openConnection();
-                con.connect();
+            while (in.read(buffer) != -1)
+                baos.write(buffer);
+            return baos.toByteArray();
 
-
-                // Reading data from url
-                is = con.getInputStream();
-
-                BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-                StringBuffer sb  = new StringBuffer();
-
-                String line = "";
-                while( ( line = br.readLine())  != null){
-                    sb.append(line);
-                }
-
-                br.close();
-                return sb.toString();
-
-
-
-                //MATT
-                // Let's read the response
-                StringBuffer buffer = new StringBuffer();
-                is = con.getInputStream();
-                BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                String line = null;
-                while ( (line = br.readLine()) != null )
-                    buffer.append(line + "rn");
-
-                is.close();
-                con.disconnect();
-                return buffer.toString();
-            }
-            catch(Throwable t) {
-                t.printStackTrace();
-            }
-            finally {
-                try { is.close(); } catch(Throwable t) {}
-                try { con.disconnect(); } catch(Throwable t) {}
-            }
-
-            return null;
-
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }finally {
+            try { in.close(); } catch(Throwable t) {}
+            try { urlconnection.disconnect(); } catch(Throwable t) {}
         }
 
-        public byte[] getImage(String code) {
-            HttpURLConnection con = null ;
-            InputStream is = null;
-            try {
-                con = (HttpURLConnection) ( new URL(IMG_URL + code)).openConnection();
-                con.setRequestMethod("GET");
-                con.setDoInput(true);
-                con.setDoOutput(true);
-                con.connect();
+        return null;
+    }
 
-                // Let's read the response
-                is = con.getInputStream();
-                byte[] buffer = new byte[1024];
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    public void getImages(){
+        ImageConnection_Handler ch1 = new ImageConnection_Handler();
+        ImageConnection_Handler ch2 = new ImageConnection_Handler();
+        ImageConnection_Handler ch3 = new ImageConnection_Handler();
+        ImageConnection_Handler ch4 = new ImageConnection_Handler();
+        ImageConnection_Handler cj1 = new ImageConnection_Handler();
+        ImageConnection_Handler cj2 = new ImageConnection_Handler();
+        ImageConnection_Handler cj3 = new ImageConnection_Handler();
 
-                while ( is.read(buffer) != -1)
-                    baos.write(buffer);
+        String url = getResources().getString(R.string.weather_icon_url);
 
-                return baos.toByteArray();
-            }
-            catch(Throwable t) {
-                t.printStackTrace();
-            }
-            finally {
-                try { is.close(); } catch(Throwable t) {}
-                try { con.disconnect(); } catch(Throwable t) {}
-            }
+        // METHODE 1 POUR CHARGER LES IMAGES : BOF BOF
 
-            return null;
+        byte[] img;
 
+        if (weatherh1 != null) {
+            img = imageDownload(url + weatherh1.getIcon() + ".png");
+            if (img != null) img_h1.setImageBitmap(BitmapFactory.decodeByteArray(img, 0, img.length));
+            else Log.e("Erreur chargement image", "H1");
         }
-    }*/
+        if (weatherh2 != null) {
+            img = imageDownload(url + weatherh2.getIcon() + ".png");
+            if (img != null) img_h2.setImageBitmap(BitmapFactory.decodeByteArray(img, 0, img.length));
+            else Log.e("Erreur chargement image", "H2");
+        }
+        if (weatherh3 != null) {
+            img = imageDownload(url + weatherh3.getIcon() + ".png");
+            if (img != null) img_h3.setImageBitmap(BitmapFactory.decodeByteArray(img, 0, img.length));
+            else Log.e("Erreur chargement image", "H3");
+        }
+        if (weatherh4 != null) {
+            img = imageDownload(url + weatherh4.getIcon() + ".png");
+            if (img != null) img_h4.setImageBitmap(BitmapFactory.decodeByteArray(img, 0, img.length));
+            else Log.e("Erreur chargement image", "H4");
+        }
+        if (weatherj1 != null) {
+            img = imageDownload(url + weatherj1.getIcon() + ".png");
+            if (img != null) img_j1.setImageBitmap(BitmapFactory.decodeByteArray(img, 0, img.length));
+            else Log.e("Erreur chargement image", "J1");
+        }
+        if (weatherj2 != null) {
+            img = imageDownload(url + weatherj2.getIcon() + ".png");
+            if (img != null) img_j2.setImageBitmap(BitmapFactory.decodeByteArray(img, 0, img.length));
+            else Log.e("Erreur chargement image", "J2");
+        }
+        if (weatherj3 != null) {
+            img = imageDownload(url + weatherj3.getIcon() + ".png");
+            if (img != null) img_j3.setImageBitmap(BitmapFactory.decodeByteArray(img, 0, img.length));
+            else Log.e("Erreur chargement image", "J3");
+        }
 
-    // EXAMPLE OF JSON RESPONSE FROM OPENWEATHERMAP
-    /*
-    {"cod":"200","message":0.0048,"city":
-        {"id":1851632,"name":"Shuzenji","coord":
-            {"lon":138.933334,"lat":34.966671}
-        ,"country":"JP","population":0}
-    ,"cnt":41,"list":[
-        {"dt":1481814000
-        ,"main":
-            {"temp":284.14,"temp_min":284.135,"temp_max":284.14,"pressure":1014.61,"sea_level":1024.26,"grnd_level":1014.61,"humidity":100,"temp_kf":0}
-        ,"weather":[
-            {"id":804,"main":"Clouds","description":"overcast clouds","icon":"04n"}
-        ]
-        ,"clouds":
-            {"all":92}
-        ,"wind":
-            {"speed":0.84,"deg":54.5002}
-        ,"sys":
-            {"pod":"n"}
-        ,"dt_txt":"2016-12-15 15:00:00"}
-     */
+        // METHOD 2 : En background, mais pas beaucoup mieux
+/*
+        try {
+            // Image h1
+            ch1.execute(url+weatherh1.getIcon()+".png");
+            byte[] img =  ch1.get();
+            if (img != null) {
+                Bitmap bm = BitmapFactory.decodeByteArray(img, 0, img.length);
+                img_h1.setImageBitmap(bm);
+            }else {
+                Log.e("ImageConvert", "Error conversion image from byte[] to bitmap");
+            }
+
+           // while(ch1.getStatus() != ImageConnection_Handler.Status.FINISHED);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        try {
+            // Image h2
+            ch2.execute(url+weatherh2.getIcon()+".png");
+            byte[] img =  ch2.get();
+            if(img != null) {
+                Bitmap bm = BitmapFactory.decodeByteArray(img, 0, img.length);
+                img_h2.setImageBitmap(bm);
+            }
+            else {
+                Log.e("ImageConvert", "Error conversion image from byte[] to bitmap");
+            }
+         //   while(ch2.getStatus() != ImageConnection_Handler.Status.FINISHED);
+            Log.i("Image h1 chargement", "");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        try {
+            // Image h3
+            ch3.execute(url+weatherh3.getIcon()+".png");
+            byte[] img =  ch3.get();
+            if (img != null) {
+                Bitmap bm = BitmapFactory.decodeByteArray(img, 0, img.length);
+                img_h3.setImageBitmap(bm);
+            }else {
+                Log.e("ImageConvert", "Error conversion image from byte[] to bitmap");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        try {
+            // Image h4
+            ch4.execute(url+weatherh4.getIcon()+".png");
+            byte[] img =  ch4.get();
+            if (img != null) {
+                Bitmap bm = BitmapFactory.decodeByteArray(img, 0, img.length);
+                img_h4.setImageBitmap(bm);
+            }else {
+                Log.e("ImageConvert", "Error conversion image from byte[] to bitmap");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        try {
+            // Image j1
+            cj1.execute(url+weatherj1.getIcon()+".png");
+            byte[] img =  cj1.get();
+            if (img != null) {
+                Bitmap bm = BitmapFactory.decodeByteArray(img, 0, img.length);
+                img_j1.setImageBitmap(bm);
+            }else {
+                Log.e("ImageConvert", "Error conversion image from byte[] to bitmap");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        try {
+            // Image j2
+            cj2.execute(url+weatherj2.getIcon()+".png");
+            byte[] img =  cj2.get();
+            if (img != null) {
+                Bitmap bm = BitmapFactory.decodeByteArray(img, 0, img.length);
+                img_j2.setImageBitmap(bm);
+            }else {
+                Log.e("ImageConvert", "Error conversion image from byte[] to bitmap");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        try {
+
+            // Image j3
+            cj3.execute(url+weatherj3.getIcon()+".png");
+            byte[] img =  cj3.get();
+            if (img != null) {
+                Bitmap bm = BitmapFactory.decodeByteArray(img, 0, img.length);
+                img_j3.setImageBitmap(bm);
+            }else {
+                Log.e("ImageConvert", "Error conversion image from byte[] to bitmap");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        */
+    }
 
     private void extractWeatherFromResponse(JSONObject jObj) {
 
         String datej1 = getDate("j1");
         String datej2 = getDate("j2");
         String datej3 = getDate("j3");
-        String datej4 = getDate("j4");
         String dateh1 = getDate("h1");
         String dateh2 = getDate("h2");
         String dateh3 = getDate("h3");
         String dateh4 = getDate("h4");
+
+        Log.i("Date H1", dateh1);
+        Log.i("Date H2", dateh2);
+        Log.i("Date H3", dateh3);
+        Log.i("Date H4", dateh4);
+        Log.i("Date J1", datej1);
+        Log.i("Date J2", datej2);
+        Log.i("Date J3", datej3);
+
 
         try {
             // We extract the location (first data in JSON response)
@@ -435,6 +545,17 @@ public class Meteo extends Fragment {
             String city = getString("name", cityObj);
             String date = null;
 
+            /*
+            String response = task.get();
+            JSONArray json = new JSONArray(response);
+            Log.i("Length",String.valueOf(json.length()));
+            for(int i=0;i<json.length();i++)
+            {
+                Log.i("data",String.valueOf(json.getJSONObject(i).getInt("mesure")));
+                values.add(new Entry(i,json.getJSONObject(i).getInt("mesure")));
+            }
+             */
+
             // Go the get the date from the list to compare it with the one we are looking for
             // Save the date code for each to be able to send it to the function that will create the weather
             // or erase
@@ -442,10 +563,14 @@ public class Meteo extends Fragment {
             int close = 0;
             JSONObject childFromListObj, mainObj;
             JSONArray listObj = jObj.optJSONArray("list");
-            while(close < 1) {
+            //for(int i = 0; i<listObj.length(); i++)
+            while(close != 8)
+            {
                 // Go through the list until we find the date we want
                 childFromListObj = listObj.getJSONObject(n);
-                date = getString("dt_txt", childFromListObj);
+                date = childFromListObj.getString("dt_txt");
+
+                Log.i("Date extraite", date);
 
                 // check the dates
                 if (date.equals(datej1))
@@ -463,12 +588,6 @@ public class Meteo extends Fragment {
                 if (date.equals(datej3))
                 {
                     this.weatherj3 = createWeather(childFromListObj, lat, lon, city);
-
-                    close ++;
-                }
-                if (date.equals(datej4))
-                {
-                    this.weatherj4 = createWeather(childFromListObj, lat, lon, city);
 
                     close ++;
                 }
@@ -498,6 +617,8 @@ public class Meteo extends Fragment {
                 }
 
                 n++;
+
+                Log.i("Number of meteos found", ""+close);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -532,6 +653,9 @@ public class Meteo extends Fragment {
             // Clouds
             JSONObject cObj = getObject("clouds", jObj);
             weather.setClouds(getInt("all", cObj));
+
+            // Date
+            weather.setDate(getString("dt_txt", jObj));
 
             return weather;
 
