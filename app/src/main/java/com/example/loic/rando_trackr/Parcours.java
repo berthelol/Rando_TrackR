@@ -3,6 +3,9 @@ package com.example.loic.rando_trackr;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -13,13 +16,19 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Loïc on 18/09/16.
@@ -51,6 +60,15 @@ public class Parcours extends Fragment implements LocationListener {
     //Output listview
     ListView lv;
 
+    //Decimal formatter
+    DecimalFormat decimalFormat;
+
+    //Database randotrackR
+    SQLiteDatabase randoTrackRDB;
+    //total distanceand time duration of the parcours
+    String total_duration="";
+    String total_distance="";
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -64,7 +82,10 @@ public class Parcours extends Fragment implements LocationListener {
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles
         getActivity().setTitle("Parcours");
-
+        //Formatter
+        decimalFormat= new DecimalFormat("###.#####");
+        //Get total distance
+        set_total_distance();
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
         // Get the best provider between gps, network and passive
@@ -85,7 +106,6 @@ public class Parcours extends Fragment implements LocationListener {
             switch (mProviderName) {
                 case "passive":
                     mLocationManager.requestLocationUpdates(mProviderName, MINIMUM_TIME, MINIMUM_DISTANCE, this);
-                    Location location = mLocationManager.getLastKnownLocation(mProviderName);
                     break;
 
                 case "network":
@@ -115,15 +135,23 @@ public class Parcours extends Fragment implements LocationListener {
             }
 
         }
+        Location location = mLocationManager.getLastKnownLocation(mProviderName);
+        if(location!=null){
+            fill_view(location);
+        }
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, this);
 
         lv=(ListView) getView().findViewById(R.id.step_listview);
         lv.setItemsCanFocus(true);
         lv.setAdapter(new Step_Output_ListView_Adapter(getContext()));
     }
-
     @Override
     public void onLocationChanged(Location location) {
+        fill_view(location);
+    }
+    public void fill_view(Location location)
+    {
+        //Toast.makeText(getContext(),"update view",Toast.LENGTH_SHORT).show();
         longitude_display =(TextView) getView().findViewById(R.id.longitude_display);
         latitude_display =(TextView) getView().findViewById(R.id.latitude_display);
         altitude_display =(TextView) getView().findViewById(R.id.altitude_display);
@@ -134,20 +162,17 @@ public class Parcours extends Fragment implements LocationListener {
         double lat = location.getLatitude();
         double lng = location.getLongitude();
         double alt = location.getAltitude();
-        //allure
-        double bearing = location.getBearing();
         double speed = location.getSpeed();
-        double accuracy = location.getAccuracy();
 
         DecimalFormat df = new DecimalFormat();
         df.setMaximumFractionDigits(2);
 
-        longitude_display.setText("Longitude\n"+String.valueOf(lng));
-        latitude_display.setText("Latitude\n"+String.valueOf(lat));
+        longitude_display.setText("Longitude\n"+decimalFormat.format(lng));
+        latitude_display.setText("Latitude\n"+decimalFormat.format(lat));
         altitude_display.setText("Altitude\n"+String.valueOf(alt)+"m");
         vitesse_display.setText("Vitesse\n"+df.format(speed)+"m/s");
-        distance_display.setText("Distance restante\n"+String.valueOf(accuracy));
-        temps_display.setText("Temps restant\n"+df.format(bearing));
+        distance_display.setText("Distance restante\n"+total_distance);
+        temps_display.setText("Durée éstimée\n"+total_duration);
     }
 
     @Override
@@ -181,5 +206,36 @@ public class Parcours extends Fragment implements LocationListener {
         mLocationManager.requestLocationUpdates(mProviderName, MINIMUM_TIME, MINIMUM_DISTANCE, this);
     }
 
+    private void set_total_distance() {
+        //Formating for distance
+        DecimalFormat distance_format = new DecimalFormat("###.## km");
+        int local_total_duration=0;
+        float local_total_distance=0f;
+        this.randoTrackRDB = getContext().openOrCreateDatabase("RandoTrackR",MODE_PRIVATE,null);
+        Cursor resultSet;
+        try {
+            //Fetch the data from DB
+            resultSet = randoTrackRDB.rawQuery("Select * from Waypoint",null);
+
+            while (resultSet.moveToNext()) {
+                int duration = resultSet.getInt(resultSet.getColumnIndex("Duration_value"));
+                local_total_duration+=duration;
+                int distance = resultSet.getInt(resultSet.getColumnIndex("Distance_value"));
+                local_total_distance+=distance;
+
+            }
+            resultSet.close();
+        } catch (SQLiteException e){
+            e.printStackTrace();
+        }
+
+        total_distance = distance_format.format(local_total_distance/1000);
+        long second = (local_total_duration) % 60;
+        long minute = (local_total_duration / (60)) % 60;
+        long hour = (local_total_duration / (60 * 60)) % 24;
+
+        total_duration = String.format("%02dh:%02dm:%02ds", hour, minute, second);
+
+    }
 
 }

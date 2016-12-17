@@ -1,7 +1,7 @@
-package com.example.loic.rando_trackr.Map_direction;
+package com.example.loic.rando_trackr.Map_data;
 
+import android.content.SharedPreferences;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -14,9 +14,49 @@ import java.util.HashMap;
 import java.util.List;
 
 public class DirectionJSONParser {
+    private SharedPreferences sharedPreferences;
 
-
-    public List<List<HashMap<String,String>>> parse(JSONObject jObject){
+    public ArrayList<Value_total> parseduration(JSONObject jObject)
+    {
+        ArrayList<Value_total> duration = new ArrayList<>() ;
+        JSONArray jRoutes = null;
+        JSONArray jLegs = null;
+        try {
+            jRoutes = jObject.getJSONArray("routes");
+            for(int i=0;i<jRoutes.length();i++){
+                jLegs = ( (JSONObject)jRoutes.get(i)).getJSONArray("legs");
+                for(int j=0;j<jLegs.length();j++){
+                    duration.add(new Value_total(((JSONObject) jLegs.get(j)).getJSONObject("duration").getString("text"),((JSONObject) jLegs.get(j)).getJSONObject("duration").getInt("value")));
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return duration;
+    }
+    public ArrayList<Value_total> parsedistance(JSONObject jObject)
+    {
+        ArrayList<Value_total> distance = new ArrayList<>();
+        JSONArray jRoutes = null;
+        JSONArray jLegs = null;
+        try {
+            jRoutes = jObject.getJSONArray("routes");
+            for(int i=0;i<jRoutes.length();i++){
+                jLegs = ( (JSONObject)jRoutes.get(i)).getJSONArray("legs");
+                for(int j=0;j<jLegs.length();j++){
+                    distance.add(new Value_total(((JSONObject) jLegs.get(j)).getJSONObject("distance").getString("text"),((JSONObject) jLegs.get(j)).getJSONObject("distance").getInt("value")));
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return distance;
+    }
+    public List<List<HashMap<String,String>>> parseroutes(JSONObject jObject){
 
         List<List<HashMap<String, String>>> routes = new ArrayList<List<HashMap<String,String>>>() ;
         JSONArray jRoutes = null;
@@ -26,18 +66,14 @@ public class DirectionJSONParser {
         try {
 
             jRoutes = jObject.getJSONArray("routes");
-
-
             for(int i=0;i<jRoutes.length();i++){
                 jLegs = ( (JSONObject)jRoutes.get(i)).getJSONArray("legs");
                 List path = new ArrayList<HashMap<String, String>>();
 
-
                 for(int j=0;j<jLegs.length();j++){
                     jSteps = ( (JSONObject)jLegs.get(j)).getJSONArray("steps");
-
-
                     for(int k=0;k<jSteps.length();k++){
+
                         String polyline = "";
                         polyline = (String)((JSONObject)((JSONObject)jSteps.get(k)).get("polyline")).get("points");
                         List<LatLng> list = decodePoly(polyline);
@@ -57,6 +93,7 @@ public class DirectionJSONParser {
         } catch (JSONException e) {
             e.printStackTrace();
         }catch (Exception e){
+            e.printStackTrace();
         }
         return routes;
     }

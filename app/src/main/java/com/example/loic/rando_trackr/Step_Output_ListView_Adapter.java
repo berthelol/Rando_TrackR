@@ -53,7 +53,10 @@ public class Step_Output_ListView_Adapter extends BaseAdapter {
                 Double lat = resultSet.getDouble(resultSet.getColumnIndex("Latitude"));
                 Double lng = resultSet.getDouble(resultSet.getColumnIndex("Longitude"));
                 int waypointnb = resultSet.getInt(resultSet.getColumnIndex("Waypointnb"));
-                Waypoint waypoint = new Waypoint(waypointnb,adresse,type,lat,lng);
+                String duration = resultSet.getString(resultSet.getColumnIndex("Duration_text"));
+                String distance = resultSet.getString(resultSet.getColumnIndex("Distance_text"));
+
+                Waypoint waypoint = new Waypoint(waypointnb,adresse,type,lat,lng,distance,0,duration,0);
                 mywaypoints.add(waypoint);
             }
             resultSet.close();
@@ -110,7 +113,7 @@ public class Step_Output_ListView_Adapter extends BaseAdapter {
             holder.info.setText("Dernière étape "+mywaypoints.get(position).waypointnb+":\n"+mywaypoints.get(position).adresse);
             holder.flag.setImageResource(R.drawable.step_finish_flag);
         }
-        holder.data.setText("Mètres restant: "+"TODO");
+        holder.data.setText("Distance: "+mywaypoints.get(position).distance_from_text+"\nDurée: "+mywaypoints.get(position).duration_from_text);
         //Set the on click listenner on the flag
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override

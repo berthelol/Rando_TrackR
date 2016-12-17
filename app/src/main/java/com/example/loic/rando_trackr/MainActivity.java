@@ -1,6 +1,8 @@
 package com.example.loic.rando_trackr;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -8,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.app.Fragment;
@@ -15,6 +18,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.example.loic.rando_trackr.Historique_data.Historique;
 
 /**
  * Created by Loïc on 18/09/16.
@@ -48,30 +53,13 @@ public class MainActivity extends AppCompatActivity
 
        try
         {
+            //Create DB for waypoints
             SQLiteDatabase database =this.openOrCreateDatabase("RandoTrackR",MODE_PRIVATE,null);
 
-            database.execSQL("CREATE TABLE IF NOT EXISTS user (firstname VARCHAR, lastname VARCHAR, nburgence VARCHAR)");
-           // database.execSQL("INSERT INTO user (firstname,lastname,nburgence) VALUES ('Loic','Berthelot','0677823818')");
-
-            /*Cursor c =database.rawQuery("SELECT * FROM user",null);
-
-            int firstnameindex = c.getColumnIndex("firstname");
-            int lastnameindex = c.getColumnIndex("lastname");
-            int nburgenceindex = c.getColumnIndex("nburgence");
-
-            c.moveToFirst();
-            while (c!=null)
-            {
-                Log.i("firstname:",c.getString(firstnameindex));
-                Log.i("lastname:",c.getString(lastnameindex));
-                c.moveToNext();
-            }*/
         } catch (Exception e)
         {
             e.printStackTrace();
         }
-              //add this line to display menu1 when the activity is loaded
-       // displaySelectedScreen(R.id.profile);
     }
 
     @Override
@@ -99,12 +87,62 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
 
-        if (id == R.id.deletedb) {
+        if (id == R.id.delete_waypoints_db) {
             //clearDB
             SQLiteDatabase randoTrackRDB = openOrCreateDatabase("RandoTrackR",MODE_PRIVATE,null);
             deleteDatabase("RandoTrackR");
             Toast toast = Toast.makeText(getApplicationContext(), "Db deleted", Toast.LENGTH_LONG);
             toast.show();
+            return true;
+        }
+
+        if (id == R.id.show_waypoints_db) {
+            //clearDB
+            SQLiteDatabase randoTrackRDB = openOrCreateDatabase("RandoTrackR",MODE_PRIVATE,null);
+            Cursor resultSet;
+            try {
+                //Fetch the data from DB
+                resultSet = randoTrackRDB.rawQuery("Select * from Waypoint",null);
+                while (resultSet.moveToNext()) {
+                    String adresse = resultSet.getString(resultSet.getColumnIndex("Adresse"));
+                    String type = resultSet.getString(resultSet.getColumnIndex("Type"));
+                    Double lat = resultSet.getDouble(resultSet.getColumnIndex("Latitude"));
+                    Double lng = resultSet.getDouble(resultSet.getColumnIndex("Longitude"));
+                    int waypointnb = resultSet.getInt(resultSet.getColumnIndex("Waypointnb"));
+                    String distance = resultSet.getString(resultSet.getColumnIndex("Distance_text"));
+                    int distance_value = resultSet.getInt(resultSet.getColumnIndex("Distance_value"));
+                    String duration = resultSet.getString(resultSet.getColumnIndex("Duration_text"));
+                    int duration_value = resultSet.getInt(resultSet.getColumnIndex("Duration_value"));
+
+                    Log.i("Item "+waypointnb," Adresse: "+adresse+" Type: "+type+ " Latitude: "+lat+" Longitude: "+lng+" Distance: "+distance+" Duration: "+duration);
+
+                }
+                resultSet.close();
+            } catch (SQLiteException e){
+                e.printStackTrace();
+            }
+            return true;
+        }
+
+        if (id == R.id.show_distance_historical_db) {
+            //clearDB
+            SQLiteDatabase randoTrackRDB = openOrCreateDatabase("RandoTrackR",MODE_PRIVATE,null);
+            Cursor resultSet;
+            try {
+                //Fetch the data from DB
+                resultSet = randoTrackRDB.rawQuery("Select * from Historical_distance_travelled",null);
+                int i=0;
+                while (resultSet.moveToNext())
+                {
+                    String date = resultSet.getString(resultSet.getColumnIndex("Date"));
+                    int distance = resultSet.getInt(resultSet.getColumnIndex("Distance"));
+                    Log.i("Id "+i,"Date: "+date+" Distance: "+distance);
+                    i++;
+                }
+                resultSet.close();
+            } catch (SQLiteException e){
+                e.printStackTrace();
+            }
             return true;
         }
 

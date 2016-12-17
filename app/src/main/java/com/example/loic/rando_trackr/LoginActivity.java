@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -52,6 +53,7 @@ import static com.example.loic.rando_trackr.R.id.call;
 import static com.example.loic.rando_trackr.R.id.lastname;
 import static com.example.loic.rando_trackr.R.id.profile;
 import static com.example.loic.rando_trackr.R.id.sms;
+import static java.security.AccessController.getContext;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -287,8 +289,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
             if (success) {
+                //For demo purpose only
+                init_historical_data();
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                //intent.putExtra(EXTRA_MESSAGE, message);
                 sharedPreferences.edit().putString("firstname",this.fistname).apply();
                 sharedPreferences.edit().putString("lastname",this.lastname).apply();
                 sharedPreferences.edit().putString("phonenumber",this.phonenumber).apply();
@@ -308,6 +311,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
 
         }
+    }
+
+    private void init_historical_data() {
+        SQLiteDatabase randoTrackRDB = randoTrackRDB = openOrCreateDatabase("RandoTrackR",MODE_PRIVATE,null);
+        randoTrackRDB.execSQL("CREATE TABLE IF NOT EXISTS Historical_distance_travelled(Date TEXT, Distance REAL);");
+
+        //Create false historical data for demo
+        randoTrackRDB.execSQL("INSERT INTO Historical_distance_travelled VALUES('2016:12:05',15008);");
+        randoTrackRDB.execSQL("INSERT INTO Historical_distance_travelled VALUES('2016:12:08',10089);");
+        randoTrackRDB.execSQL("INSERT INTO Historical_distance_travelled VALUES('2016:12:09',35656);");
+        randoTrackRDB.execSQL("INSERT INTO Historical_distance_travelled VALUES('2016:12:15',22093);");
+        randoTrackRDB.execSQL("INSERT INTO Historical_distance_travelled VALUES('2016:12:16',14098);");
     }
 }
 

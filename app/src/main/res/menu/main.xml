@@ -2,13 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/showdb"
+        android:id="@+id/show_waypoints_db"
         android:orderInCategory="1"
-        android:title="Show DB"
+        android:title="Log waypoints DB"
         app:showAsAction="never" />
     <item
-        android:id="@+id/deletedb"
+        android:id="@+id/show_distance_historical_db"
         android:orderInCategory="2"
-        android:title="Delete DB"
+        android:title="Log distance historical DB"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/delete_waypoints_db"
+        android:orderInCategory="3"
+        android:title="Delete all DB"
         app:showAsAction="never" />
 </menu>

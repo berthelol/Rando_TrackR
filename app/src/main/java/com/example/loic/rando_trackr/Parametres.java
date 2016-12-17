@@ -102,9 +102,9 @@ public class Parametres extends Fragment {
             }
         });
         //Set the selected item of the spinner with the one the user registered earlier
-        spinner1.setSelection(Quick_info.valueOf(sharedPreferences.getString("option1","Position")).getindex());
-        spinner2.setSelection(Quick_info.valueOf(sharedPreferences.getString("option2","Position")).getindex());
-        spinner3.setSelection(Quick_info.valueOf(sharedPreferences.getString("option3","Position")).getindex());
-        spinner4.setSelection(Quick_info.valueOf(sharedPreferences.getString("option4","Position")).getindex());
+        spinner1.setSelection(Quick_info.valueOf(sharedPreferences.getString("option1","Not_defined")).getindex());
+        spinner2.setSelection(Quick_info.valueOf(sharedPreferences.getString("option2","Not_defined")).getindex());
+        spinner3.setSelection(Quick_info.valueOf(sharedPreferences.getString("option3","Not_defined")).getindex());
+        spinner4.setSelection(Quick_info.valueOf(sharedPreferences.getString("option4","Not_defined")).getindex());
     }
 }

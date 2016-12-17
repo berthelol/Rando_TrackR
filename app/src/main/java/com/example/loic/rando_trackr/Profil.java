@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,10 +24,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import static android.R.attr.data;
 import static android.R.attr.fragment;
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Loïc on 18/09/16.
@@ -42,6 +46,13 @@ public class Profil extends Fragment {
     private CheckBox sms_check;
     private CheckBox call_check;
     private Button savebutton ;
+    private ImageView medal_10;
+    private TextView medal_text_10;
+    private ImageView medal_50;
+    private TextView medal_text_50;
+    private ImageView medal_100;
+    private TextView medal_text_100;
+    //Used to fecth user's data
     private SharedPreferences sharedPreferences;
     @Nullable
     @Override
@@ -57,7 +68,7 @@ public class Profil extends Fragment {
         //you can set the title for your toolbar here for different fragments different titles
         getActivity().setTitle("Profil");
         //create the sharedpreferences object to get the user's data
-        sharedPreferences = getContext().getSharedPreferences("com.example.loic.rando_trackr", Context.MODE_PRIVATE);
+        sharedPreferences = getContext().getSharedPreferences("com.example.loic.rando_trackr", MODE_PRIVATE);
 
 
         data_change=false;
@@ -68,6 +79,13 @@ public class Profil extends Fragment {
         call_check = (CheckBox) getView().findViewById(R.id.call);
         sms_check = (CheckBox) getView().findViewById(R.id.sms);
         savebutton= (Button) getView().findViewById(R.id.savebutton);
+        //medals
+        medal_10 = (ImageView) getView().findViewById(R.id.medal_10);
+        medal_text_10 =(TextView) getView().findViewById(R.id.medal_text_10);
+        medal_50 = (ImageView) getView().findViewById(R.id.medal_50);
+        medal_text_50 =(TextView) getView().findViewById(R.id.medal_text_50);
+        medal_100 = (ImageView) getView().findViewById(R.id.medal_100);
+        medal_text_100 =(TextView) getView().findViewById(R.id.medal_text_100);
 
         firstname.setText(sharedPreferences.getString("firstname",""));
         lastname.setText(sharedPreferences.getString("lastname",""));
@@ -75,32 +93,7 @@ public class Profil extends Fragment {
         sms_check.setChecked(sharedPreferences.getBoolean("sms_checked",false));
         call_check.setChecked(sharedPreferences.getBoolean("call_checked",false));
 
-        /*try {
-            SQLiteDatabase database = getContext().openOrCreateDatabase("RandoTrackR", Context.MODE_PRIVATE,null);
-
-
-            Cursor c =database.rawQuery("INSERT INTO User (CustomerName, ContactName, Address, City, PostalCode, Country)\n" +
-                    "VALUES ('Cardinal','Tom B. Erichsen','Skagen 21','Stavanger','4006','Norway');",null);
-
-            int firstnameindex = c.getColumnIndex("firstname");
-            int lastnameindex = c.getColumnIndex("lastname");
-            int nburgenceindex = c.getColumnIndex("nburgence");
-
-            c.moveToFirst();
-            while (c!=null)
-            {
-                firstname.setText(c.getString(firstnameindex));
-                Log.i("in profile firstname:",c.getString(firstnameindex));
-                lastname.setText(c.getString(lastnameindex));
-                Log.i("in profile lastname:",c.getString(lastnameindex));
-                urgency_number.setText(c.getString(nburgenceindex));
-                Log.i("in profile nb urgence:",c.getString(nburgenceindex));
-                c.moveToNext();
-            }
-        }catch (Exception e)
-        {
-            e.printStackTrace();
-        }*/
+        check_for_medal_unlock();
 
         //add all listenners to theses objects
         firstname.addTextChangedListener(new TextWatcher() {
@@ -179,20 +172,45 @@ public class Profil extends Fragment {
                     sharedPreferences.edit().putBoolean("sms_checked",sms_check.isChecked()).apply();
                     sharedPreferences.edit().putBoolean("call_checked",call_check.isChecked()).apply();
                     data_change=false;
-            /*try {
-                SQLiteDatabase database = getContext().openOrCreateDatabase("RandoTrackR", Context.MODE_PRIVATE,null);
-                Cursor c =database.rawQuery("INSERT INTO RandoTrackR (firstname, lastname, nburgence)\n" +
-                        "VALUES ("+firstname.getText()+","+lastname.getText()+","+urgency_number.getText()+");",null);
-
-            }catch (Exception e)
-            {
-                e.printStackTrace();
-            }*/
-
                 }
                 Toast toast = Toast.makeText(getContext(), "Modifications saved", Toast.LENGTH_SHORT);
                 toast.show();
             }
         });
+    }
+
+    private void check_for_medal_unlock() {
+        int distance_travelled=0;
+        SQLiteDatabase randoTrackRDB = getActivity().openOrCreateDatabase("RandoTrackR",MODE_PRIVATE,null);
+        Cursor resultSet;
+        try {
+            //Fetch the data from DB
+            resultSet = randoTrackRDB.rawQuery("Select Distance from Historical_distance_travelled",null);
+            int i=0;
+            while (resultSet.moveToNext())
+            {
+                int distance = resultSet.getInt(resultSet.getColumnIndex("Distance"));
+                distance_travelled+=distance/1000;
+            }
+            resultSet.close();
+        } catch (SQLiteException e){
+            e.printStackTrace();
+        }
+
+        medal_text_10.setText(""+(distance_travelled)+"/10 km");
+        medal_text_50.setText(""+(distance_travelled)+"/50 km");
+        medal_text_100.setText(""+(distance_travelled)+"/100 km");
+        if(distance_travelled>10)
+        {
+            medal_10.setImageResource(R.drawable.medal);
+        }
+        if(distance_travelled>50)
+        {
+            medal_50.setImageResource(R.drawable.medal);
+        }
+        if(distance_travelled>100)
+        {
+            medal_100.setImageResource(R.drawable.medal);
+        }
     }
 }
