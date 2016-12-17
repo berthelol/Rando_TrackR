@@ -83,7 +83,7 @@ public class Meteo extends Fragment {
 
         //We get the arrival point from the db
         LatLng arrival_point = get_arrival_point();
-        latA = (float)arrival_point.latitude;
+        latA = (float)arrival_point.latitude+1;
         lonA = (float)arrival_point.longitude;
         Log.i("Arrival lat and lng","lat: "+latA+" lng: "+lonA);
         ///////////        LOIC        --------------------------------->
@@ -812,12 +812,12 @@ public class Meteo extends Fragment {
             // Go the get the date from the list to compare it with the one we are looking for
             // Save the date code for each to be able to send it to the function that will create the weather
             // or erase
-            int n = 0;
+            //int n = 0;
             int close = 0;
             JSONObject childFromListObj, mainObj;
             JSONArray listObj = jObj.optJSONArray("list");
-            //for(int i = 0; i<listObj.length(); i++)
-            while(close != 7)
+            for(int n = 0; n<listObj.length(); n++)
+            //while(close != 7)
             {
                 // Go through the list until we find the date we want
                 childFromListObj = listObj.getJSONObject(n);
@@ -990,5 +990,4 @@ public class Meteo extends Fragment {
             e.printStackTrace();
         }
     }
-
 }
