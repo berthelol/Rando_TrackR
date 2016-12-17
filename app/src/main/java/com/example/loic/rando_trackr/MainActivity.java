@@ -19,6 +19,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.loic.rando_trackr.Historique_data.Historique;
+
 /**
  * Created by Loïc on 18/09/16.
  */
@@ -85,7 +87,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
 
-        if (id == R.id.deletedb) {
+        if (id == R.id.delete_waypoints_db) {
             //clearDB
             SQLiteDatabase randoTrackRDB = openOrCreateDatabase("RandoTrackR",MODE_PRIVATE,null);
             deleteDatabase("RandoTrackR");
@@ -94,7 +96,7 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
 
-        if (id == R.id.showdb) {
+        if (id == R.id.show_waypoints_db) {
             //clearDB
             SQLiteDatabase randoTrackRDB = openOrCreateDatabase("RandoTrackR",MODE_PRIVATE,null);
             Cursor resultSet;
@@ -114,6 +116,28 @@ public class MainActivity extends AppCompatActivity
 
                     Log.i("Item "+waypointnb," Adresse: "+adresse+" Type: "+type+ " Latitude: "+lat+" Longitude: "+lng+" Distance: "+distance+" Duration: "+duration);
 
+                }
+                resultSet.close();
+            } catch (SQLiteException e){
+                e.printStackTrace();
+            }
+            return true;
+        }
+
+        if (id == R.id.show_distance_historical_db) {
+            //clearDB
+            SQLiteDatabase randoTrackRDB = openOrCreateDatabase("RandoTrackR",MODE_PRIVATE,null);
+            Cursor resultSet;
+            try {
+                //Fetch the data from DB
+                resultSet = randoTrackRDB.rawQuery("Select * from Historical_distance_travelled",null);
+                int i=0;
+                while (resultSet.moveToNext())
+                {
+                    String date = resultSet.getString(resultSet.getColumnIndex("Date"));
+                    int distance = resultSet.getInt(resultSet.getColumnIndex("Distance"));
+                    Log.i("Id "+i,"Date: "+date+" Distance: "+distance);
+                    i++;
                 }
                 resultSet.close();
             } catch (SQLiteException e){

@@ -95,7 +95,6 @@ public class DirectionJSONParser {
         }catch (Exception e){
             e.printStackTrace();
         }
-        Log.i("ROUTES",""+routes);
         return routes;
     }
 

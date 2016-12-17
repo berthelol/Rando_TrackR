@@ -1,4 +1,5 @@
 package com.example.loic.rando_trackr;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -44,9 +45,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Time;
 import java.text.DecimalFormat;
 import java.text.Normalizer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -61,9 +65,6 @@ public class Map extends Fragment {
 
     //Database randotrackR
     SQLiteDatabase randoTrackRDB;
-
-    //Number helping not asking to much to google API
-    int waiting =4;
 
     //List of waypoints
     ArrayList <Waypoint> waypoints;
@@ -83,8 +84,13 @@ public class Map extends Fragment {
     //Sharedpreferences object (Database)
     SharedPreferences sharedPreferences ;
 
-    //Stored last location
+    //Stored last position
     LatLng lastlocation =null;
+
+    //previous location to calculate the distance the user makes
+    private Location prevLocation ;
+    //Total distance
+    private double total_distance = 0d;
 
     //Boolean to signal when position is created
     Boolean position_ready;
@@ -99,6 +105,7 @@ public class Map extends Fragment {
         //Initialize the randotrackR DB
         this.randoTrackRDB = getContext().openOrCreateDatabase("RandoTrackR",MODE_PRIVATE,null);
         this.randoTrackRDB.execSQL("CREATE TABLE IF NOT EXISTS Waypoint(Waypointnb INTEGER,Adresse VARCHAR,Type VARCHAR,Latitude REAL,Longitude REAL,Distance_text VARCHAR,Distance_value REAL,Duration_text VARCHAR,Duration_value REAL);");
+        this.randoTrackRDB.execSQL("CREATE TABLE IF NOT EXISTS Historical_distance_travelled(Date TEXT, Distance REAL);");
 
         //Initialize the way points array
         waypoints = new ArrayList<Waypoint>();
@@ -212,7 +219,7 @@ public class Map extends Fragment {
         Quick_info quick_info4 =  Quick_info.valueOf(sharedPreferences.getString("option4","Not_defined"));
 
         //Set the content of the enum
-        this.textview_option1.setText(quick_info1.toString());
+        this.textview_option1.setText(quick_info1==Quick_info.Not_defined?"":quick_info1.toString());
         this.textview_option2.setText(quick_info2.toString());
         this.textview_option3.setText(quick_info3.toString());
         this.textview_option4.setText(quick_info4.toString());
@@ -233,7 +240,8 @@ public class Map extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mMapView.onDestroy();
+        if(mMapView!=null)
+            mMapView.onDestroy();
     }
 
     @Override
@@ -246,35 +254,81 @@ public class Map extends Fragment {
         @Override
         public void onMyLocationChange(Location location) {
             LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
+
             //waiting++;
 
             if(!position_ready&&googleMap != null)
             {
+                //set the first position
+                prevLocation=location;
                 //First zoom to your location but false afterwards we don't want to zoom on each mouvement
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 13.0f));
+                //refresh parcours
+                refresh_parcours(loc);
             }
+            //The first location has been made
             position_ready=true;
+            //Set the last position know to the lastloc in case of click on map and add a marker
             lastlocation=loc;
-            if(googleMap != null){
-                test_if_position_is_at_waypoint(loc);
-                //add circle to the current location to trace our parcours
-                googleMap.addCircle(new CircleOptions().center(loc)
-                        .radius(2)
-                        .strokeColor(Color.BLUE)
-                        .fillColor(Color.BLUE));
-                //if waiting is a multiple of 5
-               /* if(waiting%5==0)
+
+            double distanceToLast = location.distanceTo(prevLocation);
+            // if less than 10 metres, do not record
+            if (distanceToLast < 10.00) {
+            } else
+            {
+                total_distance += distanceToLast;
+                update_distance_historical(distanceToLast);
+                prevLocation = location;
+                if(googleMap != null)
                 {
-                    if(polylines!=null)
-                        //erase the polylines
-                        polylines.remove();
                     //refresh parcours
                     refresh_parcours(loc);
-                }*/
-                refresh_parcours(loc);
+                    googleMap.addCircle(new CircleOptions().center(loc)
+                            .radius(2)
+                            .strokeColor(Color.BLUE)
+                            .fillColor(Color.BLUE));
+                }
+
             }
         }
     };
+
+    private void update_distance_historical(double distance_now) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd");
+        String currentDate = sdf.format(new Date());
+        Cursor resultSet;
+        try {
+            //Fetch the data from DB
+            resultSet = randoTrackRDB.rawQuery("Select * from Historical_distance_travelled",null);
+            //Get only the last item
+            resultSet.moveToLast();
+            if(resultSet!=null)
+            {
+                //Long _id = resultSet.getLong(resultSet.getColumnIndex("_id"));
+                String date = resultSet.getString(resultSet.getColumnIndex("Date"));
+                int distance = resultSet.getInt(resultSet.getColumnIndex("Distance"));
+                int updated_distance =(int)distance_now+distance;
+                //Check if distance from today is new or already registered
+                if(!date.equals(currentDate))
+                {
+                    //Create new distance from today
+                    this.randoTrackRDB.execSQL("INSERT INTO Historical_distance_travelled VALUES(\'"+currentDate+"\',"+total_distance+");");
+                }else
+                {
+                    //Update current distance
+                    randoTrackRDB.execSQL("UPDATE Historical_distance_travelled SET Distance = "+updated_distance+" WHERE Date=\'"+date+"\';");
+                }
+            }else
+            {
+                //Create new distance from today
+                this.randoTrackRDB.execSQL("INSERT INTO Historical_distance_travelled VALUES(\'"+currentDate+"\',"+total_distance+");");
+            }
+            resultSet.close();
+        } catch (SQLiteException e){
+            e.printStackTrace();
+        }
+    }
+
     public void test_if_position_is_at_waypoint(LatLng pos)
     {
         DecimalFormat df1 = new DecimalFormat("#.#####");
@@ -386,7 +440,8 @@ public class Map extends Fragment {
                             lineOptions.width(5);
                             lineOptions.color(Color.RED);
                         }
-
+                        if(polylines !=null)
+                            polylines.remove();
                         // Drawing polyline in the Google Map for the i-th route
                         polylines = googleMap.addPolyline(lineOptions);
                     } catch (InterruptedException e) {
@@ -408,7 +463,6 @@ public class Map extends Fragment {
     private void update_distances(ArrayList<Value_total> distances) {
         for(int i=0;i<distances.size();i++)
         {
-
             randoTrackRDB.execSQL("UPDATE Waypoint SET Distance_text = \'"+distances.get(i).getText()+"\' , Distance_value = "+distances.get(i).getValue()+" WHERE Waypointnb="+(i+1)+";");
         }
     }

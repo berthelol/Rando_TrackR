@@ -136,7 +136,9 @@ public class Parcours extends Fragment implements LocationListener {
 
         }
         Location location = mLocationManager.getLastKnownLocation(mProviderName);
-        fill_view(location);
+        if(location!=null){
+            fill_view(location);
+        }
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, this);
 
         lv=(ListView) getView().findViewById(R.id.step_listview);
