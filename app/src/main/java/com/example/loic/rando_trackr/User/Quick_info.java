@@ -1,4 +1,4 @@
-package com.example.loic.rando_trackr;
+package com.example.loic.rando_trackr.User;
 
 /**
  * Created by loic on 01/12/2016.

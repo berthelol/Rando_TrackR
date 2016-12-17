@@ -1,6 +1,5 @@
-package com.example.loic.rando_trackr;
+package com.example.loic.rando_trackr.Map_data;
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,7 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-import java.util.ArrayList;
+import com.example.loic.rando_trackr.List_view_adapters.Step_Intput_ListView_Adapter;
+import com.example.loic.rando_trackr.R;
 
 /**
  * Created by loic on 07/12/2016.

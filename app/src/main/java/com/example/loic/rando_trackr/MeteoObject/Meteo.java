@@ -1,4 +1,4 @@
-package com.example.loic.rando_trackr;
+package com.example.loic.rando_trackr.MeteoObject;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -21,8 +21,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.loic.rando_trackr.Connection_Handler;
 import com.example.loic.rando_trackr.MeteoObject.ImageConnection_Handler;
 import com.example.loic.rando_trackr.MeteoObject.Weather;
+import com.example.loic.rando_trackr.R;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;

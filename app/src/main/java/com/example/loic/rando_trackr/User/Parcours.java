@@ -1,4 +1,4 @@
-package com.example.loic.rando_trackr;
+package com.example.loic.rando_trackr.User;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,17 +17,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.example.loic.rando_trackr.List_view_adapters.Step_Output_ListView_Adapter;
+import com.example.loic.rando_trackr.R;
 
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import static android.content.Context.MODE_PRIVATE;
 

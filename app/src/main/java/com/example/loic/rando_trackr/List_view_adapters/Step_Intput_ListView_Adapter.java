@@ -1,4 +1,4 @@
-package com.example.loic.rando_trackr;
+package com.example.loic.rando_trackr.List_view_adapters;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -16,6 +16,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.loic.rando_trackr.Map_data.Geocoder;
+import com.example.loic.rando_trackr.R;
+import com.example.loic.rando_trackr.Waypoint;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONException;
@@ -23,10 +26,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
-import static android.R.attr.label;
-import static android.R.attr.type;
 import static android.content.Context.MODE_PRIVATE;
 
 /**

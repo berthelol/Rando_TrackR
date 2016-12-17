@@ -1,4 +1,4 @@
-package com.example.loic.rando_trackr;
+package com.example.loic.rando_trackr.Map_data;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;

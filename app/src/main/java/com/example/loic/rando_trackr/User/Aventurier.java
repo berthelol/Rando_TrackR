@@ -1,4 +1,4 @@
-package com.example.loic.rando_trackr;
+package com.example.loic.rando_trackr.User;
 
 import android.app.Activity;
 import android.hardware.Sensor;
@@ -16,6 +16,8 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
+import com.example.loic.rando_trackr.R;
 
 import static android.content.Context.SENSOR_SERVICE;
 
@@ -60,7 +62,7 @@ public class Aventurier extends Fragment implements SensorEventListener {
 // get the angle around the z-axis rotated
         float degree = Math.round(event.values[0]);
 
-        tvHeading.setText("Heading: " + Float.toString(degree) + " degrees");
+        tvHeading.setText("Angle: " + Float.toString(degree) + " degrés");
 
         // create a rotation animation (reverse turn degree degrees)
         RotateAnimation ra = new RotateAnimation(

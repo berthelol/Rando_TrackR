@@ -20,6 +20,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.loic.rando_trackr.Historique_data.Historique;
+import com.example.loic.rando_trackr.Map_data.Accueil;
+import com.example.loic.rando_trackr.MeteoObject.Meteo;
+import com.example.loic.rando_trackr.User.Aventurier;
+import com.example.loic.rando_trackr.User.Parametres;
+import com.example.loic.rando_trackr.User.Parcours;
+import com.example.loic.rando_trackr.User.Profil;
 
 /**
  * Created by Loïc on 18/09/16.

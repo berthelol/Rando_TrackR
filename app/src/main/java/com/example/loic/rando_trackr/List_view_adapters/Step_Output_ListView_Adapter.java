@@ -1,4 +1,4 @@
-package com.example.loic.rando_trackr;
+package com.example.loic.rando_trackr.List_view_adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -14,6 +14,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.loic.rando_trackr.R;
+import com.example.loic.rando_trackr.Waypoint;
 
 import java.util.ArrayList;
 

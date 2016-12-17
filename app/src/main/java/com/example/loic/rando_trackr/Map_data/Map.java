@@ -1,5 +1,4 @@
-package com.example.loic.rando_trackr;
-import android.content.Context;
+package com.example.loic.rando_trackr.Map_data;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -22,8 +21,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.example.loic.rando_trackr.Map_data.ParserTask;
-import com.example.loic.rando_trackr.Map_data.Value_total;
+import com.example.loic.rando_trackr.User.Quick_info;
+import com.example.loic.rando_trackr.R;
+import com.example.loic.rando_trackr.Waypoint;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 
@@ -45,7 +45,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.sql.Time;
 import java.text.DecimalFormat;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
@@ -55,11 +54,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static android.R.attr.data;
-import static android.R.attr.duration;
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.loic.rando_trackr.R.drawable.location;
-import static com.google.android.gms.fitness.data.zzr.St;
 
 
 /**

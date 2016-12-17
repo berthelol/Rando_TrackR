@@ -1,4 +1,4 @@
-package com.example.loic.rando_trackr;
+package com.example.loic.rando_trackr.User;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -62,6 +62,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.loic.rando_trackr.*;
+import com.example.loic.rando_trackr.R;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -106,7 +108,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         //Facebook initialize
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
-        setContentView(R.layout.activity_login);
+        setContentView(com.example.loic.rando_trackr.R.layout.activity_login);
         //Shared preference initialized
         sharedPreferences = getApplicationContext().getSharedPreferences("com.example.loic.rando_trackr", Context.MODE_PRIVATE);
         //if already register pass the login page

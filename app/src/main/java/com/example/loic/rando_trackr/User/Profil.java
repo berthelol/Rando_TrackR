@@ -1,4 +1,4 @@
-package com.example.loic.rando_trackr;
+package com.example.loic.rando_trackr.User;
 
 
 import android.content.Context;
@@ -27,6 +27,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.loic.rando_trackr.R;
 
 import static android.R.attr.data;
 import static android.R.attr.fragment;

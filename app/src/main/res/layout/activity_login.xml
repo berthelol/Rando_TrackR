@@ -10,7 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context="com.example.loic.rando_trackr.LoginActivity">
+    tools:context="com.example.loic.rando_trackr.User.LoginActivity">
 
     <!-- Login progress -->
 
