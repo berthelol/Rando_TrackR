@@ -1,5 +1,8 @@
 package com.example.loic.rando_trackr;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -20,6 +23,7 @@ import android.widget.TextView;
 
 import com.example.loic.rando_trackr.MeteoObject.ImageConnection_Handler;
 import com.example.loic.rando_trackr.MeteoObject.Weather;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,14 +39,16 @@ import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.support.v7.widget.AppCompatDrawableManager.get;
 import static com.example.loic.rando_trackr.R.id.imageView;
 import static com.example.loic.rando_trackr.R.id.layoutA;
+import static com.example.loic.rando_trackr.R.id.login_button;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 /**
- * Created by Loïc on 18/09/16.
+ * Created by Mathieu on 18/09/16.
  */
 
 public class Meteo extends Fragment {
@@ -75,12 +81,14 @@ public class Meteo extends Fragment {
         //you can set the title for your toolbar here for different fragments different titles
         getActivity().setTitle("Meteo");
 
-        // We initialize to 0 each value to know that there is no arrival point
-        latA = 0;
-        lonA = 0;
-
+        //We get the arrival point from the db
+        LatLng arrival_point = get_arrival_point();
+        latA = (float)arrival_point.latitude;
+        lonA = (float)arrival_point.longitude;
+        Log.i("Arrival lat and lng","lat: "+latA+" lng: "+lonA);
         ///////////        LOIC        --------------------------------->
         // Then we get the current position and arrival position from the app
+
         latD = Float.parseFloat(""+48.85);
         lonD = Float.parseFloat(""+2.35);
 
@@ -156,6 +164,40 @@ public class Meteo extends Fragment {
             // Active the information message
             layoutIF.setVisibility(View.VISIBLE);
         }
+    }
+
+    private LatLng get_arrival_point() {
+        Double lat =null;
+        Double lng=null;
+        SQLiteDatabase randoTrackRDB = getActivity().openOrCreateDatabase("RandoTrackR",MODE_PRIVATE,null);
+        Cursor resultSet;
+        try {
+            //Fetch the data from DB
+            resultSet = randoTrackRDB.rawQuery("Select Latitude,Longitude from Waypoint",null);
+
+            if(resultSet!=null && resultSet.getCount()>0)
+            {
+                resultSet.moveToLast();
+                lat = resultSet.getDouble(resultSet.getColumnIndex("Latitude"));
+                lng = resultSet.getDouble(resultSet.getColumnIndex("Longitude"));
+            }else
+            {
+                lat=0d;
+                lng=0d;
+            }
+            resultSet.close();
+        } catch (SQLiteException e){
+            e.printStackTrace();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        if(lat!=null||lng!=null)
+        {
+            return new LatLng(lat,lng);
+        }
+        return null;
     }
 
     // http://www.survivingwithandroid.com/2013/05/build-weather-app-json-http-android.html
